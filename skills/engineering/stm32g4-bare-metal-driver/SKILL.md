@@ -1,37 +1,31 @@
 ---
 name: stm32g4-bare-metal-driver
-description: Critical engineering guidelines for STM32G4 bare-metal driver development without CubeMX dependency.
-globs: "**/*.{c,h,s,ld}"
-alwaysApply: false
+description: 當使用者要求設計、撰寫或審查 STM32G4 (Cortex-M4F) 的底層韌體與驅動時使用。
 ---
 
-# STM32G4 Bare-Metal & Driver Engineering Standard
+# STM32G4 Bare-Metal Driver SOP
 
-## 🎯 Trigger Context
+## 1. 執行步驟 (Execution Steps)
 
-Invoke this skill whenever designing, reviewing, or writing firmware code for **STM32G4 series microcontrollers (Cortex-M4F)**, particularly for low-level peripheral configuration, clock/memory setup, and hardware acceleration.
+### 步驟一：讀取/收集上下文 (Context)
+- 主動讀取專案原始碼，確認當前的 Linker Script (記憶體映射) 與 Clock Tree 狀態。
+- 釐清目標功能是否為高頻迴圈、Interrupt Service Routine (ISR) 或涉及數學加速器 (CORDIC, FMAC)。
 
----
+### 步驟二：驗證與規劃 (Plan)
+- 依據執行路徑規劃驅動層次：
+  - **Hot Path** (ISR、高頻迴圈、CORDIC/FMAC)：必須規劃使用 **LL Driver** 或**直接操作暫存器 (Registers)**。
+  - **Cold Path** (RCC 時脈設定、System Bus 初始化)：允許使用 **HAL Driver** 以確保初始化邏輯的可讀性。
+- 規劃記憶體配置：評估是否需要將關鍵 ISR 或高時效函數放置於 **CCM-RAM** (`.ccmram`)。
+- **決策點**：遇到驅動層選用衝突，或記憶體段 (SRAM1/SRAM2 vs CCM-RAM) 分配有疑慮時，**主動列出選項向使用者請教，勿替使用者下決定**。
 
-## 🧠 Mental Model & Boundary Constraints
+### 步驟三：執行與驗證 (Execute & Verify)
+- 撰寫程式碼。若使用 LL 巨集或位元操作，必須加上 Inline Comments，精確標示所修改的 Register 與 Bitfield。
+- **事實檢驗 (Fact Check)**：
+  - 若修改系統時脈 (提升 SYSCLK，最高達 170MHz, Range 1 Boost)，檢查是否已在提升**前**正確設定了 **Flash Wait States (Latency)**。
+  - 確認關鍵高時效函數是否正確加上了進入 CCM-RAM 的 attribute (`.ccmram`)。
 
-- **Scope Boundary:** Strictly confined to the **MCU boundary** (Cortex-M4 core, FLASH/RAM architecture, internal peripherals). NO high-level application/domain logic (e.g., motor control algorithms or power topologies).
-- **No GUI Generation:** Do NOT suggest or write code relying on STM32CubeMX `.ioc` generated projects or HAL complex wrappers where performance matters.
-- **Hardware First:** Engineers must understand exact register mechanics. Every abstraction must remain transparent.
+## 2. 約束與規則 (Constraints & Rules)
 
----
-
-## 📜 Core Rules
-
-### 1. Driver Layer Selection Policy
-
-- **LL Drivers / Registers (Default for Hot Paths):** Mandatory for Interrupt Service Routines (ISRs), high-frequency loops, ADC/DAC triggers, TIM CCR updates, and hardware accelerators (**CORDIC**, **FMAC**).
-- **HAL Drivers (Allowed for Cold Paths):** Permitted strictly for complex static setup logic (e.g., RCC system clock initialization, Option Bytes configuration, standard bus init).
-
-### 2. Memory & Clock Architecture Rules
-
-- **Flash Wait State Enforcement:** Always check and configure FLASH Latency (WS) BEFORE boosting SYSCLK (up to 170 MHz, VCORE Range 1 Boost).
-- **RAM Layout Awareness:** Explicitly consider SRAM1, SRAM2, and **CCM-RAM** (`0x10000000`). Suggest placing time-critical ISRs or look-up routines into CCM-RAM via link section attributes.
-- **Register Transparency:** When using bitwise operations or LL macros, add inline comments explicitly identifying the modified register and bitfields (e.g., `RCC->CR |= RCC_CR_HSION; // Turn on HSI`).
-
----
+- **Scope Boundary**：嚴格限制在 MCU 內部硬體功能 (Core, Flash, RAM, Peripherals)，不處理高階應用演算法。
+- **No CubeMX**：嚴禁依賴或生成 CubeMX 相關程式碼。必須以直接手刻的底層韌體 (Direct hand-coded firmware) 來深化對硬體的掌握。
+- **Hardware Transparency**：工程師必須理解精確的暫存器機制，所有的硬體抽象操作都必須保持透明。
