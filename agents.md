@@ -8,3 +8,4 @@
 - **撰寫 Git Commit Message (Git Commit Message Generator)**：當使用者要求撰寫、生成或審查 Git Commit Message 時，請載入並遵循 [`skills/productivity/git-commit-message/SKILL.md`](skills/productivity/git-commit-message/SKILL.md)。
 - **Git 分支策略管理 (Git Branch Strategy)**：當使用者要求建立 Git 分支、合併分支或執行版本控制流程時，請載入並遵循 [`skills/productivity/git-branch-strategy/SKILL.md`](skills/productivity/git-branch-strategy/SKILL.md)。
 - **PyQt6 / PySide6 Desktop GUI Generator**：當使用者要求設計、撰寫或重構 PyQt6 / PySide6 桌面應用程式 GUI 畫面與架構時，請載入並遵循 [`skills/engineering/pyside6-gui-generator/SKILL.md`](skills/engineering/pyside6-gui-generator/SKILL.md)。
+- **釐清需求與除錯 (Grill Me)**：當使用者在開發新功能或遇到複雜 Bug 需要討論與釐清盲點時，請載入並遵循 [`skills/engineering/grillme/SKILL.md`](skills/engineering/grillme/SKILL.md)。
