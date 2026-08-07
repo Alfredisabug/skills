@@ -18,7 +18,7 @@ description: 當使用者要求設計、撰寫或審查 STM32G4 (Cortex-M4F) 的
 - **記憶體配置**：評估關鍵 ISR/高時效函式分配至 **CCM-RAM** (`.ccmram`)。
 - **事實查證 (Facts)**：
   - **Register 疑慮**：主動檢索專案內的 **SVD 檔案** 核對，依據 SVD 的真實定義回答。
-  - **HAL/LL API 疑慮**：向使用者索取官方手冊 (PDF 網址/文字片段) 閱讀後修正。
+  - **HAL/LL API 疑慮**：優先使用工具查詢 ST 官方 UM2570 手冊 (網址：https://www.st.com/resource/en/user_manual/um2570-description-of-stm32g4-hal-and-lowlayer-drivers--stmicroelectronics.pdf)。若仍無法釐清，再向使用者索取具體網址或文字片段。
 - **決策點 (Decisions)**：遇到驅動層衝突或記憶體分配疑慮，列出選項向使用者請教，勿擅自決定。
 
 ### Step 3: Execution & Fact Check
