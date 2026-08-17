@@ -1,0 +1,22 @@
+# 加密憑證檔案
+*-credentials.enc
+*.enc
+
+# 本地環境配置
+.env
+.env.local
+.env.*.local
+
+# 安全儲存備份（如有）
+credentials/
+secrets/
+*.key
+*.pem
+
+# 日誌檔案
+*.log
+logs/
+
+# 作業系統檔案
+.DS_Store
+Thumbs.db

@@ -3,6 +3,10 @@
 一份自己用的skill庫
 
 ## 🛠️ 可用技能路由 (Skills Routing)
+- **GitLab API Manager**：當使用者要求操作 GitLab API (Issues、Merge Requests、Pipeline 等) 時使用。自動偵測 GitLab 相關請求或手動觸發。請載入並遵循 [`skills/engineering/gitlab-api-manager/SKILL.md`](skills/engineering/gitlab-api-manager/SKILL.md)。
+- **GitHub API Manager**：當使用者要求操作 GitHub API (Issues、Pull Requests、Actions 等) 時使用。自動偵測 GitHub 相關請求或手動觸發。請載入並遵循 [`skills/engineering/github-api-manager/SKILL.md`](skills/engineering/github-api-manager/SKILL.md)。
+- **Asset Manager**：當使用者要求上傳、管理或刪除檔案附件時使用（支援 GitLab/GitHub）。與 API Manager 協作處理資源關聯。請載入並遵循 [`skills/engineering/asset-manager/SKILL.md`](skills/engineering/asset-manager/SKILL.md)。
+- **Python UV 環境管理**：當需要在專案中使用 Python 時，自動使用 uv 管理虛擬環境與依賴包。請載入並遵循 [`skills/engineering/python-uv-environment/SKILL.md`](skills/engineering/python-uv-environment/SKILL.md)。
 - **撰寫/修訂 AI 技能 (Skills)**：當使用者要求新增、重構或優化 Skill SOP 時，請載入並遵循 [`skills/productivity/write-great-skill/SKILL.md`](skills/productivity/write-great-skill/SKILL.md)。
 - **STM32G4 底層驅動開發 (STM32G4 Bare-Metal Driver)**：當使用者要求設計、撰寫或審查 STM32G4 (Cortex-M4F) 的底層韌體與驅動時，請載入並遵循 [`skills/engineering/stm32g4-bare-metal-driver/SKILL.md`](skills/engineering/stm32g4-bare-metal-driver/SKILL.md)。
 - **撰寫 Git Commit Message (Git Commit Message Generator)**：當使用者要求撰寫、生成或審查 Git Commit Message 時，請載入並遵循 [`skills/productivity/git-commit-message/SKILL.md`](skills/productivity/git-commit-message/SKILL.md)。
