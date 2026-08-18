@@ -206,7 +206,7 @@ async function deleteGitHubCredentials(): Promise<void> {
 
 ### 🔧 備用方案：跨平台 Python keyring (需使用 uv 環境)
 
-若需要在非 VS Code 環境使用 Python，請先載入 [`python-uv-environment`](../python-uv-environment/SKILL.md) Skill 來管理環境。
+若需要在非 VS Code 環境使用 Python，請先載入 [`python-uv-environment`](../../engineering/python-uv-environment/SKILL.md) Skill 來管理環境。
 
 **使用步驟**：
 
