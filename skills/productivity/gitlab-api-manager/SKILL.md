@@ -63,7 +63,7 @@ description: 當使用者要求操作 GitLab (Issues、Merge Requests、Pipeline
 
 #### 4. Releases 管理
 * **查詢 Release**：`glab release list`
-* **建立 Release**：`glab release create <tag> --name "<name>" --notes "<notes>"`
+* **建立 Release (可隨附檔案)**：`glab release create <tag> [<files>...] --name "<name>" --notes "<notes>"`
 
 #### 5. REST API v4 備用方案
 若需要自訂端點或無 CLI 指令封裝時，使用 `glab api` 或 `curl`：
@@ -101,4 +101,17 @@ description: 當使用者要求操作 GitLab (Issues、Merge Requests、Pipeline
 * **Decisions**：MR 合併策略（Squash / Merge commit）、目標分支選擇、刪除來源分支等決策需由使用者確認。
 
 ### 協作規範
-* **附件上傳**：若需上傳圖片或檔案至 Issue/MR，呼叫 [`git-asset-manager`](../git-asset-manager/SKILL.md) 處理檔案上傳，本 Skill 負責將 URL 插入至 Markdown Body。
+* **附件與資產管理**：若需上傳圖片/Log 至 Issue/MR，或向既有 Release 追加/覆蓋二進位資產，呼叫 [`git-asset-manager`](../git-asset-manager/SKILL.md) 處理。
+
+### 🚫 禁止混淆之 GitHub CLI 語法 (Anti-Confusion / Platform Boundaries)
+GitLab CLI (`glab`) 與 GitHub CLI (`gh`) 語法存在顯著差異，**嚴禁混用**：
+* ❌ 嚴禁在 `glab` 使用 `--title` 建立 Release（GitLab 建立 Release 必須用 `--name` 或 `-n`）。
+* ❌ 嚴禁在 `glab` 使用 `--body`（GitLab 建立 Issue/MR 必須用 `--description` 或 `-d`）。
+* ❌ 嚴禁在 `glab` 使用 `--base` / `--head`（GitLab 建立 MR 必須用 `--target-branch` / `--source-branch`）。
+* ❌ 嚴禁在 `glab` 使用 `glab issue comment`（GitLab 新增留言必須用 `glab issue note` 搭配 `--message`）。
+* ❌ 嚴禁在 `glab` 使用 `glab release upload ... --clobber`（`glab` 不支援 `--clobber` 旗標）。
+* ❌ 嚴禁在 `glab` 使用 `--limit`（GitLab 列表分頁限制必須用 `--per-page` 或 `-p`）。
+* ❌ 嚴禁在 `glab` 使用 `--state open`（GitLab 狀態篩選必須用 `--state opened`）。
+* ❌ 嚴禁在 `glab` 使用 `glab pr ...` 或 `glab run ...`（GitLab 必須用 `glab mr ...` 與 `glab ci ...`）。
+
+

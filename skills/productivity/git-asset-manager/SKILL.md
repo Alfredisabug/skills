@@ -36,7 +36,12 @@ description: 當使用者要求上傳、管理或附加檔案至 GitHub/GitLab (
 
 #### 🐙 1. GitHub 平台
 
-* **上傳至 Release 資產 (Release Assets)**：
+* **建立 Release 並同時上傳資產 (一步到位 / 推薦)**：
+  ```bash
+  gh release create <tag_name> <file_paths...> --title "<title>" --notes "<notes>"
+  ```
+
+* **向「已存在」的 Release 追加資產 (Release Assets)**：
   ```bash
   # 基本發布
   gh release upload <tag_name> <file_path>
@@ -59,11 +64,17 @@ description: 當使用者要求上傳、管理或附加檔案至 GitHub/GitLab (
 
 #### 🦊 2. GitLab 平台
 
-* **上傳至 Release 資產 (Release Assets)**：
+* **建立 Release 並同時附加資產 (一步到位 / 推薦)**：
   ```bash
-  # 上傳檔案並關聯至 Release
+  glab release create <tag_name> <file_paths...> --name "<title>" --notes "<notes>"
+  ```
+
+* **向「已存在」的 Release 追加資產 (Release Assets)**：
+  ```bash
+  # 上傳檔案並關聯至既有 Release（若 tag 名稱含斜線如 release/v1.0，部分環境需 URL 編碼如 release%2Fv1.0）
   glab release upload <tag_name> <file_path>
   ```
+  > ⚠️ **注意**：`glab` **不支援** `--clobber` 參數。若需替換同名資產，需先透過 API 或 Web UI 刪除既有資產後再重新上傳。
 
 * **上傳通用專案附件 (Issue / MR / 討論區使用)**：
   ```bash
@@ -113,8 +124,20 @@ description: 當使用者要求上傳、管理或附加檔案至 GitHub/GitLab (
 
 ### 安全性 (Security)
 * **禁止洩漏金鑰**：嚴禁上傳包含 API Key、PAT、私鑰或密碼的檔案。
-* **破壞性覆蓋確認 (Decisions)**：覆蓋同名 Release Asset（如 `--clobber`）或刪除資產前，必須取得使用者確認。
+* **破壞性覆蓋確認 (Decisions)**：覆蓋同名 Release Asset（GitHub 的 `--clobber`）或刪除資產前，必須取得使用者確認。
 
 ### 事實與決策分離 (Facts vs. Decisions)
 * **Facts**：檔案大小、SHA256 校驗碼、遠端 Release Tag 存在性必須透過指令真實取得。
 * **Decisions**：Release 版本命名、是否覆蓋舊檔案、資產名稱變更需由使用者指示。
+
+### 平台與環境相容性 (Platform & Environment Guidelines)
+* **Release 建立策略**：若 Release 尚未建立，優先使用 `create` 一步到位（`glab release create <tag> <files...>` / `gh release create <tag> <files...>`），避免分步上傳因 Release 尚不存在報 404。
+* **Tag 名稱含斜線**：若 Tag 名稱含有斜線（如 `release/v1.0`），在 `upload` 或 REST API 端點呼叫時需進行 URL 編碼（如 `release%2Fv1.0`）。
+* **CLI 旗標差異（嚴禁混用）**：
+  - Release 名稱：GitHub 用 `--title`；GitLab 必須用 `--name`（或 `-n`）。
+  - 覆蓋檔案：`--clobber` 僅為 GitHub CLI (`gh`) 專有旗標，GitLab CLI (`glab`) 並無此參數。
+  - 刪除資產：GitHub 有 `gh release delete-asset`；GitLab 需透過 REST API 或 Web 介面刪除資產連結。
+* **路徑處理（特別是 Windows）**：路徑參數應優先使用相對路徑，並保持指令單行無多餘換行符號，避免系統 `CreateFile` 因換行字元報語法錯誤。
+* **GitLab 依賴機制**：GitLab CLI 發布 Release 資產底層會託管於 Generic Package Registry，需確保專案已啟用 Package Registry 且 Token 具備足夠權限。
+
+

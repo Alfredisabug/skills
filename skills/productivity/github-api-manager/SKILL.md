@@ -104,3 +104,12 @@ description: 當使用者要求操作 GitHub (Issues、Pull Requests、Actions�
 
 ### 協作規範
 * **附件上傳**：若需上傳圖片或檔案至 Issue/PR，呼叫 [`git-asset-manager`](../git-asset-manager/SKILL.md) 處理檔案上傳，本 Skill 負責將 URL 插入至 Markdown Body。
+
+### 🚫 禁止混淆之 GitLab CLI 語法 (Anti-Confusion / Platform Boundaries)
+GitHub CLI (`gh`) 與 GitLab CLI (`glab`) 語法存在顯著差異，**嚴禁混用**：
+* ❌ 嚴禁在 `gh` 使用 `--description`（GitHub 建立 Issue/PR 必須用 `--body` 或 `-b`）。
+* ❌ 嚴禁在 `gh` 使用 `--target-branch` / `--source-branch`（GitHub 建立 PR 必須用 `--base` / `--head`）。
+* ❌ 嚴禁在 `gh` 使用 `gh issue note`（GitHub 新增留言必須用 `gh issue comment`）。
+* ❌ 嚴禁在 `gh` 使用 `--per-page`（GitHub 限制數量必須用 `--limit`）。
+* ❌ 嚴禁在 `gh` 使用 `--state opened`（GitHub 狀態篩選必須用 `--state open`）。
+
