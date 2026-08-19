@@ -16,3 +16,4 @@
 - **工程需求與除錯 (Engineering Grill Me)**：當使用者在開發新功能、規劃程式架構，或是遇到複雜 Bug 需要討論與釐清盲點時，請載入並遵循 [`skills/engineering/grillme/SKILL.md`](skills/engineering/grillme/SKILL.md)。
 - **Python GUI 潔淨架構與 DDD (Python Clean Architecture GUI)**：當使用者要求設計、撰寫或重構 Python GUI (PySide6 / PyQt) 且需遵循 Clean Architecture 與 DDD 原則時，請載入並遵循 [`skills/engineering/python-clean-architecture-gui/SKILL.md`](skills/engineering/python-clean-architecture-gui/SKILL.md)。
 - **C 語言韌體潔淨架構 (C Clean Architecture Firmware)**：當使用者要求開發 C 語言韌體 (Bare-metal 或 RTOS) 且需嚴格分離硬體與核心演算法時，請載入並遵循 [`skills/engineering/c-clean-architecture-firmware/SKILL.md`](skills/engineering/c-clean-architecture-firmware/SKILL.md)。
+- **TI C2000 F28P 底層驅動開發 (TI C2000 F28P Driver)**：當使用者要求設計、撰寫或審查 TI C2000 F28P 系列 (如 F28P550x、F28P650x) 的底層韌體與驅動時，請載入並遵循 [`skills/engineering/ti-c2000-f28p-driver/SKILL.md`](skills/engineering/ti-c2000-f28p-driver/SKILL.md)。
