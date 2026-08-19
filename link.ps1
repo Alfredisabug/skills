@@ -1,9 +1,14 @@
-# link.ps1 - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
+﻿# link.ps1 - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
 # 執行方式：在目標專案目錄下執行： & <skills庫路徑>\link.ps1
 
 param (
-    [switch]$Clean = $false  # 傳入 -Clean 參數可一鍵移除所有掛載與引導檔案
+    [switch]$Clean = $false
 )
+
+# 確保 Console 支援 UTF-8 輸出
+try {
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+} catch {}
 
 $SkillsRepo = $PSScriptRoot
 $TargetDir = (Get-Location).Path
@@ -55,11 +60,11 @@ if (-not (Test-Path ".agents")) {
 
 # 2. 建立通用 AGENTS.md
 if (-not (Test-Path "AGENTS.md")) {
-    $agentsContent = @"
-# Project Agent Routing
-本專案已連結通用技能庫。
-請優先參閱並遵循 [.agents/agents.md](.agents/agents.md) 中的可用技能路由。
-"@
+    $agentsContent = @(
+        "# Project Agent Routing",
+        "本專案已連結通用技能庫。",
+        "請優先參閱並遵循 [.agents/agents.md](.agents/agents.md) 中的可用技能路由。"
+    ) -join "`r`n"
     Set-Content -Path "AGENTS.md" -Value $agentsContent -Encoding utf8
     Write-Host " [OK] 建立 AGENTS.md 路由入口" -ForegroundColor Green
 } else {
@@ -73,29 +78,29 @@ if (-not (Test-Path ".github")) {
 
 # 3-1. Copilot Instructions
 if (-not (Test-Path ".github\copilot-instructions.md")) {
-    $copilotContent = @"
-# Workspace Instructions & Skills
-本專案已整合通用 Skills 程式庫。
-請在每次處理使用者請求時，優先參閱 [.agents/agents.md](../.agents/agents.md) 的「可用技能路由 (Skills Routing)」。
-若使用者的任務符合路由表中的情境，請主動讀取並遵循對應的 SKILL.md 檔案內容後再進行回覆與執行。
-"@
+    $copilotContent = @(
+        "# Workspace Instructions & Skills",
+        "本專案已整合通用 Skills 程式庫。",
+        "請在每次處理使用者請求時，優先參閱 [.agents/agents.md](../.agents/agents.md) 的「可用技能路由 (Skills Routing)」。",
+        "若使用者的任務符合路由表中的情境，請主動讀取並遵循對應的 SKILL.md 檔案內容後再進行回覆與執行。"
+    ) -join "`r`n"
     Set-Content -Path ".github\copilot-instructions.md" -Value $copilotContent -Encoding utf8
-    Write-Host " [OK] 建立 .github/copilot-instructions.md" -ForegroundColor Green
+    Write-Host " [OK] 建立 .github\copilot-instructions.md" -ForegroundColor Green
 } else {
-    Write-Host " [SKIP] .github/copilot-instructions.md 已存在" -ForegroundColor Yellow
+    Write-Host " [SKIP] .github\copilot-instructions.md 已存在" -ForegroundColor Yellow
 }
 
 # 3-2. VS Code Copilot 原生 Prompts 連結 (.github/prompts -> .agents/prompts)
 $promptsSource = Join-Path $SkillsRepo "prompts"
 if ((Test-Path $promptsSource) -and (-not (Test-Path ".github\prompts"))) {
     New-Item -ItemType Junction -Path ".github\prompts" -Target $promptsSource | Out-Null
-    Write-Host " [OK] 建立 .github/prompts -> $promptsSource (VS Code Copilot Prompt Files)" -ForegroundColor Green
+    Write-Host " [OK] 建立 .github\prompts -> $promptsSource (VS Code Copilot Prompt Files)" -ForegroundColor Green
 }
 
 # 4. 偵測 Git Repo 並自動加入 .gitignore
 $isGit = (Test-Path ".git") -or ((git rev-parse --is-inside-work-tree 2>$null) -eq "true")
 if ($isGit) {
-    $gitignorePath = ".gitignore"
+    $gitignorePath = Join-Path (Get-Location) ".gitignore"
     $entriesToIgnore = @(
         ".agents",
         "AGENTS.md",
@@ -105,7 +110,7 @@ if ($isGit) {
     
     $currentContent = ""
     if (Test-Path $gitignorePath) {
-        $currentContent = Get-Content -Path $gitignorePath -Raw
+        $currentContent = [System.IO.File]::ReadAllText($gitignorePath, [System.Text.Encoding]::UTF8)
     }
 
     $missingEntries = @()
@@ -117,8 +122,8 @@ if ($isGit) {
     }
 
     if ($missingEntries.Count -gt 0) {
-        $ignoreBlock = "`n# Personal AI Agent & Skills (auto-generated)`n" + ($missingEntries -join "`n") + "`n"
-        Add-Content -Path $gitignorePath -Value $ignoreBlock -Encoding utf8
+        $ignoreBlock = "`r`n# Personal AI Agent & Skills (auto-generated)`r`n" + ($missingEntries -join "`r`n") + "`r`n"
+        [System.IO.File]::AppendAllText($gitignorePath, $ignoreBlock, [System.Text.Encoding]::UTF8)
         Write-Host " [OK] 已自動將個人 Skill 與 Agent 設定加入 .gitignore" -ForegroundColor Green
     } else {
         Write-Host " [SKIP] .gitignore 已包含相關忽略規則" -ForegroundColor Yellow
