@@ -20,3 +20,10 @@ logs/
 # 作業系統檔案
 .DS_Store
 Thumbs.db
+
+# 執行專案時產生的過渡檔與計畫（保留本機暫存，不納入版本控制）
+plans/*
+!plans/.gitkeep
+implements/*
+!implements/.gitkeep
+

@@ -1,6 +1,10 @@
 # Project Brief
 
-一份自己用的skill庫
+一份自己用的通用 AI Agent Skill 與工作流程式庫。
+
+## 📂 工作流與暫存檔案管理規範 (Workflow & Artifacts)
+- **規劃與進度 (Plans)**：如需進行需求分析、執行規劃 (Plan) 或工作拆解，請將計畫與進度記錄寫至 `.agents/plans/` 底下（建議檔名格式：`[專案名稱]-[任務名稱]-plan.md` 或於 `.agents/plans/<專案名稱>/` 子目錄內）。
+- **過渡與暫存檔 (Implements)**：執行過程中的過渡檔案、臨時除錯腳本、驗證草稿請一律存放於 `.agents/implements/` 底下，避免污染專案目錄。
 
 ## 🛠️ 可用技能路由 (Skills Routing)
 - **GitLab API Manager**：當使用者要求操作 GitLab API (Issues、Merge Requests、Pipeline 等) 時使用。自動偵測 GitLab 相關請求或手動觸發。請載入並遵循 [`skills/productivity/gitlab-api-manager/SKILL.md`](skills/productivity/gitlab-api-manager/SKILL.md)。
