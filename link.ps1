@@ -20,7 +20,7 @@ if ($SkillsRepo -eq $TargetDir) {
 }
 
 if ($Clean) {
-    Write-Host "🧹 正在移除當前專案 ($TargetDir) 的 Skills 連結..." -ForegroundColor Yellow
+    Write-Host "🧹 正在移除當前專案 ($TargetDir) 的 Skills 連結與配置..." -ForegroundColor Yellow
     
     if (Test-Path ".agents") {
         Remove-Item -Path ".agents" -Force -Recurse
@@ -29,6 +29,10 @@ if ($Clean) {
     if (Test-Path "AGENTS.md") {
         Remove-Item -Path "AGENTS.md" -Force
         Write-Host " [OK] 已移除 AGENTS.md" -ForegroundColor Green
+    }
+    if (Test-Path ".ignore") {
+        Remove-Item -Path ".ignore" -Force
+        Write-Host " [OK] 已移除 .ignore" -ForegroundColor Green
     }
     if (Test-Path ".github\prompts") {
         Remove-Item -Path ".github\prompts" -Force -Recurse
@@ -76,18 +80,20 @@ if (-not (Test-Path ".github")) {
     New-Item -ItemType Directory -Path ".github" | Out-Null
 }
 
-# 3-1. Copilot Instructions
+# 3-1. Copilot Instructions (明確指示直接讀取或設定 includeIgnoredFiles)
 if (-not (Test-Path ".github\copilot-instructions.md")) {
     $copilotContent = @(
         "# Workspace Instructions & Skills",
-        "本專案已整合通用 Skills 程式庫。",
+        "本專案已整合通用 Skills 程式庫（位於 `.agents/skills/`）。",
         "請在每次處理使用者請求時，優先參閱 [.agents/agents.md](../.agents/agents.md) 的「可用技能路由 (Skills Routing)」。",
-        "若使用者的任務符合路由表中的情境，請主動讀取並遵循對應的 SKILL.md 檔案內容後再進行回覆與執行。"
+        "若使用者的任務符合路由表中的情境：",
+        "1. 請優先直接以相對路徑讀取對應的 SKILL.md 檔案內容並嚴格遵循。",
+        "2. 若使用檔案搜尋工具 (如 findFiles / grepSearch)，請務必將參數 includeIgnoredFiles 設為 true，以確保讀取本地 Skills 資料夾。"
     ) -join "`r`n"
     Set-Content -Path ".github\copilot-instructions.md" -Value $copilotContent -Encoding utf8
     Write-Host " [OK] 建立 .github\copilot-instructions.md" -ForegroundColor Green
 } else {
-    Write-Host " [SKIP] .github\copilot-instructions.md 已存在" -ForegroundColor Yellow
+    Write-Host " [SKIP] .github/copilot-instructions.md 已存在" -ForegroundColor Yellow
 }
 
 # 3-2. VS Code Copilot 原生 Prompts 連結 (.github/prompts -> .agents/prompts)
@@ -97,20 +103,42 @@ if ((Test-Path $promptsSource) -and (-not (Test-Path ".github\prompts"))) {
     Write-Host " [OK] 建立 .github\prompts -> $promptsSource (VS Code Copilot Prompt Files)" -ForegroundColor Green
 }
 
-# 4. 偵測 Git Repo 並自動加入 .gitignore
+# 4. 建立 .ignore 檔案 (讓 VS Code / Ripgrep 搜尋引擎不忽略 .agents，但 Git 仍保持忽略)
+if (-not (Test-Path ".ignore")) {
+    $ignoreSearchContent = @(
+        "# Allow VS Code / Ripgrep search engine to index local agent skills and prompts",
+        "!.agents",
+        "!.agents/**",
+        "!AGENTS.md",
+        "!.github/copilot-instructions.md",
+        "!.github/prompts",
+        "!.github/prompts/**"
+    ) -join "`r`n"
+    Set-Content -Path ".ignore" -Value $ignoreSearchContent -Encoding utf8
+    Write-Host " [OK] 建立 .ignore (允許 VS Code Copilot 搜尋已忽略目錄)" -ForegroundColor Green
+}
+
+# 5. 偵測 Git Repo 並寫入本地 .git/info/exclude (不污染專案 .gitignore 且不被 git 追蹤)
 $isGit = (Test-Path ".git") -or ((git rev-parse --is-inside-work-tree 2>$null) -eq "true")
 if ($isGit) {
-    $gitignorePath = Join-Path (Get-Location) ".gitignore"
+    $gitInfoDir = Join-Path (Get-Location) ".git\info"
+    $excludePath = Join-Path $gitInfoDir "exclude"
+    
     $entriesToIgnore = @(
         ".agents",
         "AGENTS.md",
+        ".ignore",
         ".github/copilot-instructions.md",
         ".github/prompts"
     )
-    
+
+    if (-not (Test-Path $gitInfoDir)) {
+        New-Item -ItemType Directory -Path $gitInfoDir -Force | Out-Null
+    }
+
     $currentContent = ""
-    if (Test-Path $gitignorePath) {
-        $currentContent = [System.IO.File]::ReadAllText($gitignorePath, [System.Text.Encoding]::UTF8)
+    if (Test-Path $excludePath) {
+        $currentContent = [System.IO.File]::ReadAllText($excludePath, [System.Text.Encoding]::UTF8)
     }
 
     $missingEntries = @()
@@ -122,12 +150,12 @@ if ($isGit) {
     }
 
     if ($missingEntries.Count -gt 0) {
-        $ignoreBlock = "`r`n# Personal AI Agent & Skills (auto-generated)`r`n" + ($missingEntries -join "`r`n") + "`r`n"
-        [System.IO.File]::AppendAllText($gitignorePath, $ignoreBlock, [System.Text.Encoding]::UTF8)
-        Write-Host " [OK] 已自動將個人 Skill 與 Agent 設定加入 .gitignore" -ForegroundColor Green
+        $excludeBlock = "`r`n# Personal AI Agent & Skills (local exclude, never committed)`r`n" + ($missingEntries -join "`r`n") + "`r`n"
+        [System.IO.File]::AppendAllText($excludePath, $excludeBlock, [System.Text.Encoding]::UTF8)
+        Write-Host " [OK] 已將個人 Skill 設定加入 .git/info/exclude (本地 Git 忽略，不改動 .gitignore)" -ForegroundColor Green
     } else {
-        Write-Host " [SKIP] .gitignore 已包含相關忽略規則" -ForegroundColor Yellow
+        Write-Host " [SKIP] .git/info/exclude 已包含相關規則" -ForegroundColor Yellow
     }
 }
 
-Write-Host "`n🎉 完成！各 AI 工具現在可以自動使用 Skills 與 Prompts！" -ForegroundColor Cyan
+Write-Host "`n🎉 完成！各 AI 工具現在可以自由搜尋並自動使用 Skills 與 Prompts！" -ForegroundColor Cyan
