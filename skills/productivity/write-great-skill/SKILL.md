@@ -55,3 +55,6 @@ disable-model-invocation: false
 1. 分析使用者意圖與目標領域
 2. 按結構草繪內容
 3. **執行修剪**：刪除至少 20% 不必要的修飾詞與廢話
+4. **【重要：生命週期閉環】同步更新 `agents.md` 路由表**：
+    - **新建 Skill 時**：在專案根目錄的 `agents.md` 之 `## 🛠️ 可用技能路由 (Skills Routing)` 區塊追加新 Skill 的觸發說明與相對路徑（格式：`- **Skill 名稱**：觸發時機。請載入並遵循 [\`skills/.../SKILL.md\`](skills/.../SKILL.md)。`）。
+    - **修改/重構 Skill 時**：檢查 `agents.md` 中的描述是否仍與更新後的 Skill 相符並同步微調。

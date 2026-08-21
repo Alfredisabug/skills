@@ -110,11 +110,29 @@ if (-not (Test-Path ".agents")) {
     Write-Host " [SKIP] .agents 目錄已存在" -ForegroundColor Yellow
 }
 
+# 動態從 agents.md 提取技能路由清單
+$agentsMdPath = Join-Path $SkillsRepo "agents.md"
+$extractedRouting = ""
+if (Test-Path $agentsMdPath) {
+    $agentsContent = [System.IO.File]::ReadAllText($agentsMdPath, [System.Text.Encoding]::UTF8)
+    if ($agentsContent -match "(?s)## 🛠️ 可用技能路由[^\r\n]*\r?\n(?<routes>.*?)(\r?\n## |\Z)") {
+        $rawRoutes = $Matches['routes'].Trim()
+        $routeLines = ($rawRoutes -split "\r?\n") | Where-Object { $_ -match "^\s*-\s+\*\*" }
+        # 將 skills/ 相對路徑轉換為專案掛載後的 .agents/skills/
+        $routeLines = $routeLines -replace "(?<=\(|`|\[)skills/", ".agents/skills/"
+        $extractedRouting = ($routeLines -join "`r`n")
+    }
+}
+if ([string]::IsNullOrWhiteSpace($extractedRouting)) {
+    $extractedRouting = "- 請調用讀檔工具查閱 `.agents/agents.md` 以取得完整可用技能列表與對應路徑。"
+}
+
 # 2. 建立或附加 AGENTS.md
 $agentsBlockBody = @(
     "---",
-    "## 🛠️ 個人通用技能庫 (Personal Universal Skills)",
-    "本專案已掛載個人通用技能庫。請優先參閱並遵循 [.agents/agents.md](.agents/agents.md) 中的可用技能路由。"
+    "## 🚨 個人通用技能庫強制路由 (Universal Skills Routing Protocol)",
+    "本專案已掛載個人專屬技能與標準作業程序庫。",
+    "**【強制執行規則】**：在處理專案任務前，AI 助理**必須優先載入並嚴格遵循** [.agents/agents.md](.agents/agents.md) 中的技能路由與規範。嚴格禁止在未查閱對應 `.agents/skills/` 規範前直接依通用常理回覆特定領域任務（如 Git 操作、韌體驅動、Python 環境、架構設計等）。"
 ) -join "`r`n"
 
 $agentsBlock = @(
@@ -130,8 +148,12 @@ if (-not (Test-Path $agentsFilePath)) {
     Write-Host " [OK] 建立 AGENTS.md 路由入口" -ForegroundColor Green
 } else {
     $currentAgents = [System.IO.File]::ReadAllText($agentsFilePath, [System.Text.Encoding]::UTF8)
-    if ($currentAgents -match [regex]::Escape($MarkerStart)) {
-        Write-Host " [SKIP] AGENTS.md 已包含個人 Skills 標記區塊" -ForegroundColor Yellow
+    $pattern = "(?s)\r?\n?" + [regex]::Escape($MarkerStart) + ".*?" + [regex]::Escape($MarkerEnd)
+    if ($currentAgents -match $pattern) {
+        $cleanAgents = ($currentAgents -replace $pattern, "").TrimEnd()
+        $updatedAgents = $cleanAgents + "`r`n`r`n" + $agentsBlock + "`r`n"
+        [System.IO.File]::WriteAllText($agentsFilePath, $updatedAgents, $Utf8NoBom)
+        Write-Host " [OK] 已更新 AGENTS.md 中的個人 Skills 區塊" -ForegroundColor Green
     } else {
         $updatedAgents = $currentAgents.TrimEnd() + "`r`n`r`n" + $agentsBlock + "`r`n"
         [System.IO.File]::WriteAllText($agentsFilePath, $updatedAgents, $Utf8NoBom)
@@ -147,12 +169,26 @@ if (-not (Test-Path ".github")) {
 # 3-1. 建立或附加 Copilot Instructions
 $copilotBlockBody = @(
     "---",
-    "## 🛠️ Workspace Universal Skills",
-    "本專案已整合通用 Skills 程式庫（位於 `.agents/skills/`）。",
-    "請在每次處理使用者請求時，優先參閱 [.agents/agents.md](../.agents/agents.md) 的「可用技能路由 (Skills Routing)」。",
-    "若使用者的任務符合路由表中的情境：",
-    "1. 請優先直接以相對路徑讀取對應的 SKILL.md 檔案內容並嚴格遵循。",
-    "2. 若使用檔案搜尋工具 (如 findFiles / grepSearch)，請務必將參數 includeIgnoredFiles 設為 true，以確保讀取本地 Skills 資料夾。"
+    "## 🚨 核心強制執行規則 (MANDATORY SKILLS PROTOCOL)",
+    "",
+    "本專案已掛載個人專屬技能與標準作業程序庫（位於 `.agents/skills/`）。",
+    "你身為此專案的 AI 助理，**在回答任何問題或編寫程式碼之前，必須無條件執行以下「前置檢查清單 (Pre-Flight Checklist)」**：",
+    "",
+    "### 1. 前置檢查清單 (Pre-Flight Gate)",
+    "每當使用者請求符合以下領域或情境時，**嚴格禁止憑預訓練常識直接作答**，你必須**立即調用讀檔工具讀取對應的 SKILL.md** 並嚴格執行其規範：",
+    "",
+    $extractedRouting,
+    "",
+    "*💡 若遇到未列於上表之特殊任務，請主動調用工具讀取 `.agents/agents.md` 查看最新擴充技能。*",
+    "",
+    "### 2. 執行順序與工具要求 (Execution Sequence)",
+    "1. **第一步（強制）**：依據任務主題，直接使用讀檔工具 (如 `readFile`) 載入對應路徑下的 `SKILL.md`（例如 `.agents/skills/productivity/git-commit-message/SKILL.md`）。",
+    "2. **第二步**：嚴格遵循該 `SKILL.md` 內定義的工作流程、命名規範、防呆機制與輸出模板。",
+    "3. **第三步**：若使用搜尋工具（如 `findFiles` / `grepSearch`），必須確保搜尋範圍涵蓋 `.agents/` 目錄（若有 `includeIgnoredFiles` 參數請設為 `true`）。",
+    "",
+    "### 3. 輸出合規宣告 (Mandatory Header)",
+    "凡命中上述技能主題之回覆，**必須在輸出的最開頭第一行加入**：",
+    "> 💡 **[Skill Applied]** 已載入並嚴格遵循 \`.agents/skills/.../SKILL.md\` 規範"
 ) -join "`r`n"
 
 $copilotBlock = @(
@@ -168,8 +204,12 @@ if (-not (Test-Path $copilotFilePath)) {
     Write-Host " [OK] 建立 .github\copilot-instructions.md" -ForegroundColor Green
 } else {
     $currentCopilot = [System.IO.File]::ReadAllText($copilotFilePath, [System.Text.Encoding]::UTF8)
-    if ($currentCopilot -match [regex]::Escape($MarkerStart)) {
-        Write-Host " [SKIP] .github/copilot-instructions.md 已包含個人 Skills 標記區塊" -ForegroundColor Yellow
+    $pattern = "(?s)\r?\n?" + [regex]::Escape($MarkerStart) + ".*?" + [regex]::Escape($MarkerEnd)
+    if ($currentCopilot -match $pattern) {
+        $cleanCopilot = ($currentCopilot -replace $pattern, "").TrimEnd()
+        $updatedCopilot = $cleanCopilot + "`r`n`r`n" + $copilotBlock + "`r`n"
+        [System.IO.File]::WriteAllText($copilotFilePath, $updatedCopilot, $Utf8NoBom)
+        Write-Host " [OK] 已更新 .github\copilot-instructions.md 中的個人 Skills 區塊" -ForegroundColor Green
     } else {
         $updatedCopilot = $currentCopilot.TrimEnd() + "`r`n`r`n" + $copilotBlock + "`r`n"
         [System.IO.File]::WriteAllText($copilotFilePath, $updatedCopilot, $Utf8NoBom)

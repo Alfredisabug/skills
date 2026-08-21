@@ -77,12 +77,23 @@ else
     echo -e "\033[33m [SKIP] .agents 已存在\033[0m"
 fi
 
+# 動態從 agents.md 提取技能路由清單
+EXTRACTED_ROUTING=""
+if [ -f "$SKILLS_REPO/agents.md" ]; then
+    EXTRACTED_ROUTING=$(awk '/Skills Routing/{flag=1; next} /^## /{flag=0} flag && /^[[:space:]]*- \*\*/{print}' "$SKILLS_REPO/agents.md" | sed 's|skills/|.agents/skills/|g')
+fi
+
+if [ -z "$EXTRACTED_ROUTING" ]; then
+    EXTRACTED_ROUTING="- 請調用讀檔工具查閱 \`.agents/agents.md\` 以取得完整可用技能列表與對應路徑。"
+fi
+
 # 2. 建立或附加 AGENTS.md
 AGENTS_BLOCK=$(cat << EOF
 $MARKER_START
 ---
-## 🛠️ 個人通用技能庫 (Personal Universal Skills)
-本專案已掛載個人通用技能庫。請優先參閱並遵循 [.agents/agents.md](.agents/agents.md) 中的可用技能路由。
+## 🚨 個人通用技能庫強制路由 (Universal Skills Routing Protocol)
+本專案已掛載個人專屬技能與標準作業程序庫。
+**【強制執行規則】**：在處理專案任務前，AI 助理**必須優先載入並嚴格遵循** [.agents/agents.md](.agents/agents.md) 中的技能路由與規範。嚴格禁止在未查閱對應 \`.agents/skills/\` 規範前直接依通用常理回覆特定領域任務（如 Git 操作、韌體驅動、Python 環境、架構設計等）。
 $MARKER_END
 EOF
 )
@@ -96,7 +107,9 @@ EOF
     echo -e "\033[32m [OK] 建立 AGENTS.md 路由入口\033[0m"
 else
     if grep -qF "$MARKER_START" "AGENTS.md"; then
-        echo -e "\033[33m [SKIP] AGENTS.md 已包含個人 Skills 標記區塊\033[0m"
+        sed -i "/$MARKER_START/,/$MARKER_END/d" "AGENTS.md"
+        echo -e "\n\n$AGENTS_BLOCK" >> "AGENTS.md"
+        echo -e "\033[32m [OK] 已更新 AGENTS.md 中的個人 Skills 區塊\033[0m"
     else
         echo -e "\n\n$AGENTS_BLOCK" >> "AGENTS.md"
         echo -e "\033[32m [OK] 已將個人 Skills 路由附加至現有 AGENTS.md 底部\033[0m"
@@ -110,12 +123,26 @@ mkdir -p .github
 COPILOT_BLOCK=$(cat << EOF
 $MARKER_START
 ---
-## 🛠️ Workspace Universal Skills
-本專案已整合通用 Skills 程式庫（位於 \`.agents/skills/\`）。
-請在每次處理使用者請求時，優先參閱 [.agents/agents.md](../.agents/agents.md) 的「可用技能路由 (Skills Routing)」。
-若使用者的任務符合路由表中的情境：
-1. 請優先直接以相對路徑讀取對應的 SKILL.md 檔案內容並嚴格遵循。
-2. 若使用檔案搜尋工具 (如 findFiles / grepSearch)，請務必將參數 includeIgnoredFiles 設為 true，以確保讀取本地 Skills 資料夾。
+## 🚨 核心強制執行規則 (MANDATORY SKILLS PROTOCOL)
+
+本專案已掛載個人專屬技能與標準作業程序庫（位於 \`.agents/skills/\`）。
+你身為此專案的 AI 助理，**在回答任何問題或編寫程式碼之前，必須無條件執行以下「前置檢查清單 (Pre-Flight Checklist)」**：
+
+### 1. 前置檢查清單 (Pre-Flight Gate)
+每當使用者請求符合以下領域或情境時，**嚴格禁止憑預訓練常識直接作答**，你必須**立即調用讀檔工具讀取對應的 SKILL.md** 並嚴格執行其規範：
+
+$EXTRACTED_ROUTING
+
+*💡 若遇到未列於上表之特殊任務，請主動調用工具讀取 \`.agents/agents.md\` 查看最新擴充技能。*
+
+### 2. 執行順序與工具要求 (Execution Sequence)
+1. **第一步（強制）**：依據任務主題，直接使用讀檔工具 (如 \`readFile\`) 載入對應路徑下的 \`SKILL.md\`（例如 \`.agents/skills/productivity/git-commit-message/SKILL.md\`）。
+2. **第二步**：嚴格遵循該 \`SKILL.md\` 內定義的工作流程、命名規範、防呆機制與輸出模板。
+3. **第三步**：若使用搜尋工具（如 \`findFiles\` / \`grepSearch\`），必須確保搜尋範圍涵蓋 \`.agents/\` 目錄（若有 \`includeIgnoredFiles\` 參數請設為 \`true\`）。
+
+### 3. 輸出合規宣告 (Mandatory Header)
+凡命中上述技能主題之回覆，**必須在輸出的最開頭第一行加入**：
+> 💡 **[Skill Applied]** 已載入並嚴格遵循 \`.agents/skills/.../SKILL.md\` 規範
 $MARKER_END
 EOF
 )
@@ -129,7 +156,9 @@ EOF
     echo -e "\033[32m [OK] 建立 .github/copilot-instructions.md\033[0m"
 else
     if grep -qF "$MARKER_START" ".github/copilot-instructions.md"; then
-        echo -e "\033[33m [SKIP] .github/copilot-instructions.md 已包含個人 Skills 標記區塊\033[0m"
+        sed -i "/$MARKER_START/,/$MARKER_END/d" ".github/copilot-instructions.md"
+        echo -e "\n\n$COPILOT_BLOCK" >> ".github/copilot-instructions.md"
+        echo -e "\033[32m [OK] 已更新 .github/copilot-instructions.md 中的個人 Skills 區塊\033[0m"
     else
         echo -e "\n\n$COPILOT_BLOCK" >> ".github/copilot-instructions.md"
         echo -e "\033[32m [OK] 已將個人 Skills 提示附加至現有 copilot-instructions.md 底部\033[0m"
