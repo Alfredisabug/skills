@@ -1,4 +1,4 @@
-﻿# link.ps1 - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
+# link.ps1 - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
 # 執行方式：在目標專案目錄下執行： & <skills庫路徑>\link.ps1
 
 param (
@@ -132,7 +132,9 @@ $agentsBlockBody = @(
     "---",
     "## 🚨 個人通用技能庫強制路由 (Universal Skills Routing Protocol)",
     "本專案已掛載個人專屬技能與標準作業程序庫。",
-    "**【強制執行規則】**：在處理專案任務前，AI 助理**必須優先載入並嚴格遵循** [.agents/agents.md](.agents/agents.md) 中的技能路由與規範。嚴格禁止在未查閱對應 `.agents/skills/` 規範前直接依通用常理回覆特定領域任務（如 Git 操作、韌體驅動、Python 環境、架構設計等）。"
+    "**【強制執行規則】**：在處理專案任務時，AI 助理在**每一輪對話 (Every Single Turn)** 都**必須優先載入並嚴格遵循** [.agents/agents.md](.agents/agents.md) 中的技能路由與規範。",
+    "- **多輪持續性 (Persistence)**：一旦套用特定技能，後續所有追問、修改與功能擴充皆必須持續遵循該技能之規範，嚴格禁止退化為預訓練通用常識。",
+    "- **領域切換重查 (Context Switch)**：若使用者切換至其他專業任務，必須重新調用對應的 `.agents/skills/` 規範。"
 ) -join "`r`n"
 
 $agentsBlock = @(
@@ -168,27 +170,30 @@ if (-not (Test-Path ".github")) {
 
 # 3-1. 建立或附加 Copilot Instructions
 $copilotBlockBody = @(
-    "---",
-    "## 🚨 核心強制執行規則 (MANDATORY SKILLS PROTOCOL)",
-    "",
-    "本專案已掛載個人專屬技能與標準作業程序庫（位於 `.agents/skills/`）。",
-    "你身為此專案的 AI 助理，**在回答任何問題或編寫程式碼之前，必須無條件執行以下「前置檢查清單 (Pre-Flight Checklist)」**：",
-    "",
-    "### 1. 前置檢查清單 (Pre-Flight Gate)",
-    "每當使用者請求符合以下領域或情境時，**嚴格禁止憑預訓練常識直接作答**，你必須**立即調用讀檔工具讀取對應的 SKILL.md** 並嚴格執行其規範：",
-    "",
+    '---',
+    '## 🚨 核心強制執行規則 (MANDATORY SKILLS PROTOCOL)',
+    '',
+    '本專案已掛載個人專屬技能與標準作業程序庫（位於 `.agents/skills/`）。',
+    '你身為此專案的 AI 助理，**無論是第一輪請求或是後續多輪追問，每一輪回覆 (Every Single Turn) 之前均必須無條件執行以下協議**：',
+    '',
+    '### 1. 前置檢查清單 (Pre-Flight Gate)',
+    '每當使用者請求符合以下領域或情境時，**嚴格禁止憑預訓練常識直接作答**，你必須**立即調用讀檔工具讀取對應的 SKILL.md** 並嚴格執行其規範：',
+    '',
     $extractedRouting,
-    "",
-    "*💡 若遇到未列於上表之特殊任務，請主動調用工具讀取 `.agents/agents.md` 查看最新擴充技能。*",
-    "",
-    "### 2. 執行順序與工具要求 (Execution Sequence)",
-    "1. **第一步（強制）**：依據任務主題，直接使用讀檔工具 (如 `readFile`) 載入對應路徑下的 `SKILL.md`（例如 `.agents/skills/productivity/git-commit-message/SKILL.md`）。",
-    "2. **第二步**：嚴格遵循該 `SKILL.md` 內定義的工作流程、命名規範、防呆機制與輸出模板。",
-    "3. **第三步**：若使用搜尋工具（如 `findFiles` / `grepSearch`），必須確保搜尋範圍涵蓋 `.agents/` 目錄（若有 `includeIgnoredFiles` 參數請設為 `true`）。",
-    "",
-    "### 3. 輸出合規宣告 (Mandatory Header)",
-    "凡命中上述技能主題之回覆，**必須在輸出的最開頭第一行加入**：",
-    "> 💡 **[Skill Applied]** 已載入並嚴格遵循 \`.agents/skills/.../SKILL.md\` 規範"
+    '',
+    '*💡 若遇到未列於上表之特殊任務，請主動調用工具讀取 `.agents/agents.md` 查看最新擴充技能。*',
+    '',
+    '### 2. 跨多輪對話持續性規則 (Multi-Turn Continuity Rules)',
+    '1. **技能持續生效 (Skill Persistence)**：一旦載入或確認適用某個 Skill（如 STM32G4 驅動、Clean Architecture 等），在後續的所有追問、微調、除錯與功能增加中，該 Skill 的所有規範（如架構分層、暫存器限制、命名與風格）**持續 100% 強制生效**，絕不可因進入多輪對話而退化為一般預訓練回覆。',
+    '2. **主題切換立即重查 (Context Switch Gate)**：當在同一個對話中轉移至其他領域任務（例如編寫完代碼後要求「寫 commit message」或「管理 python 環境」），必須**立刻調用讀檔工具讀取新主題的 SKILL.md**，嚴禁略過。',
+    '3. **未載入則立即讀檔 (Load Before Answering)**：若當前問題符合技能範圍但尚未讀取對應 `SKILL.md`，第一步必須呼叫讀檔工具 (如 `readFile`) 載入對應規範文件。',
+    '',
+    '### 3. 每輪強制定錨標頭 (Mandatory Per-Turn Anchor Header)',
+    '為確保在多輪對話中保持狀態與約束，**凡回覆任何技術或操作請求時，你在輸出的最開頭第一行必須輸出對應的定錨標籤**：',
+    '- **首次載入技能**：> 💡 **[Skill Applied: <技能名稱>]** 已載入並嚴格遵循 `.agents/skills/.../SKILL.md` 規範',
+    '- **多輪延續技能**：> 🔄 **[Skill Maintained: <技能名稱>]** 持續嚴格遵循 `.agents/skills/.../SKILL.md` 規範執行',
+    '- **切換新技能**：> 🔀 **[Skill Switched: <技能名稱>]** 已切換並載入 `.agents/skills/.../SKILL.md` 規範',
+    '- **一般無對應技能**：> ℹ️ **[General Mode]** 無特定技能路由'
 ) -join "`r`n"
 
 $copilotBlock = @(
