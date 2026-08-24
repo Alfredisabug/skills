@@ -1,4 +1,4 @@
-# link.ps1 - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
+﻿# link.ps1 - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
 # 執行方式：在目標專案目錄下執行： & <skills庫路徑>\link.ps1
 
 param (
@@ -51,7 +51,7 @@ if ($Clean) {
         $pattern = "(?s)\r?\n?" + [regex]::Escape($MarkerStart) + ".*?" + [regex]::Escape($MarkerEnd) + "\r?\n?"
         if ($current -match $pattern) {
             $remaining = ($current -replace $pattern, "").Trim()
-            if ([string]::IsNullOrWhiteSpace($remaining)) {
+            if ([string]::IsNullOrWhiteSpace($remaining) -or ($remaining -eq "# Project Agent Routing")) {
                 Remove-Item -Path "AGENTS.md" -Force
                 Write-Host " [OK] 已移除 AGENTS.md (由腳本建立之檔案)" -ForegroundColor Green
             } else {
@@ -68,7 +68,7 @@ if ($Clean) {
         $pattern = "(?s)\r?\n?" + [regex]::Escape($MarkerStart) + ".*?" + [regex]::Escape($MarkerEnd) + "\r?\n?"
         if ($current -match $pattern) {
             $remaining = ($current -replace $pattern, "").Trim()
-            if ([string]::IsNullOrWhiteSpace($remaining)) {
+            if ([string]::IsNullOrWhiteSpace($remaining) -or ($remaining -eq "# Workspace Instructions & Skills")) {
                 Remove-Item -Path $copilotPath -Force
                 Write-Host " [OK] 已移除 .github/copilot-instructions.md (由腳本建立之檔案)" -ForegroundColor Green
             } else {
