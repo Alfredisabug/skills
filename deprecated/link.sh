@@ -2,12 +2,21 @@
 # link.sh - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
 # 執行方式：在目標專案目錄下執行： bash <skills庫路徑>/link.sh [--clean]
 
-SKILLS_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SKILLS_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET_DIR="$(pwd)"
 
-if [ "$SKILLS_REPO" = "$TARGET_DIR" ]; then
+if [ "$SKILLS_REPO" = "$TARGET_DIR" ] || [ "$SCRIPT_DIR" = "$TARGET_DIR" ]; then
     echo -e "\033[31m⚠️ 請在「目標專案目錄」下執行此腳本，不要在 skills 庫本身執行！\033[0m"
     exit 1
+fi
+
+if [ "$1" != "--clean" ] && [ "$1" != "-c" ]; then
+    echo -e "\033[33m⚠️ 【已棄用通知】軟連結機制已棄用！\033[0m"
+    echo -e "\033[36m👉 請改用標準套件管理器： npx skills add Alfredisabug/skills\033[0m"
+    echo -e "💡 若要清理舊專案已建立的軟連結與配置，請執行："
+    echo -e "\033[32m   bash \"${BASH_SOURCE[0]}\" --clean\033[0m\n"
+    exit 0
 fi
 
 MARKER_START="<!-- BEGIN PERSONAL AI SKILLS -->"

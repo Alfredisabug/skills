@@ -1,4 +1,4 @@
-﻿# link.ps1 - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
+# link.ps1 - 自動以動態路徑掛載 Skills 與 Prompts 至當前專案
 # 執行方式：在目標專案目錄下執行： & <skills庫路徑>\link.ps1
 
 param (
@@ -10,13 +10,21 @@ try {
     [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 } catch {}
 
-$SkillsRepo = $PSScriptRoot
+$SkillsRepo = (Split-Path $PSScriptRoot -Parent)
 $TargetDir = (Get-Location).Path
 
-# 防止在 skills 庫本身目錄下執行掛載
-if ($SkillsRepo -eq $TargetDir) {
+# 防止在 skills 庫本身目錄下執行
+if ($SkillsRepo -eq $TargetDir -or $PSScriptRoot -eq $TargetDir) {
     Write-Host "⚠️ 請在「目標專案目錄」下執行此腳本，不要在 skills 庫本身執行！" -ForegroundColor Red
     exit 1
+}
+
+if (-not $Clean) {
+    Write-Host "⚠️ 【已棄用通知】軟連結/Junction 機制已棄用！" -ForegroundColor Yellow
+    Write-Host "👉 請改用標準套件管理器： npx skills add Alfredisabug/skills" -ForegroundColor Cyan
+    Write-Host "💡 若要清理舊專案已建立的軟連結與配置，請執行：" -ForegroundColor White
+    Write-Host "   & `"$PSCommandPath`" -Clean`n" -ForegroundColor Green
+    exit 0
 }
 
 # 定義標記常數與 UTF8 (無 BOM) 編碼物件
