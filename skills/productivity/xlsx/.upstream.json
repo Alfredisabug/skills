@@ -1,0 +1,8 @@
+﻿{
+    "name":  "xlsx",
+    "upstream_repo":  "https://github.com/anthropics/skills",
+    "upstream_path":  "skills/xlsx",
+    "commit_sha":  "fa0fa64bdc967915dc8399e803be67759e1e62b8",
+    "commit_date":  "2026-07-17T02:47:37Z",
+    "synced_at":  "2026-09-24 11:29:10"
+}

@@ -22,3 +22,6 @@
 - **C 語言韌體潔淨架構 (C Clean Architecture Firmware)**：當使用者要求開發 C 語言韌體 (Bare-metal 或 RTOS) 且需嚴格分離硬體與核心演算法時，請載入並遵循 [`skills/engineering/c-clean-architecture-firmware/SKILL.md`](skills/engineering/c-clean-architecture-firmware/SKILL.md)。
 - **TI C2000 F28P 底層驅動開發 (TI C2000 F28P Driver)**：當使用者要求設計、撰寫或審查 TI C2000 F28P 系列 (如 F28P550x、F28P650x) 的底層韌體與驅動時，請載入並遵循 [`skills/engineering/ti-c2000-f28p-driver/SKILL.md`](skills/engineering/ti-c2000-f28p-driver/SKILL.md)。
 - **專案技能環境初始化 (Setup Alfred Skills)**：當使用者要求在專案中初始化 Alfred Skills 配置、設定 AGENTS.md 或配置 VS Code Copilot 規則時使用。請載入並遵循 [`skills/productivity/setup-alfred-skills/SKILL.md`](skills/productivity/setup-alfred-skills/SKILL.md)。
+- **PowerPoint 簡報處理 (PPTX)**：當使用者要求建立、分析、編輯或讀取 PowerPoint (.pptx / .potx) 簡報時使用。請載入並遵循 [`skills/productivity/pptx/SKILL.md`](skills/productivity/pptx/SKILL.md)。
+- **Excel 試算表處理 (XLSX)**：當使用者要求建立、分析、編輯、計算公式或清洗 Excel/CSV/TSV (.xlsx / .xlsm / .csv) 試算表時使用。請載入並遵循 [`skills/productivity/xlsx/SKILL.md`](skills/productivity/xlsx/SKILL.md)。
+
