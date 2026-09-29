@@ -26,4 +26,5 @@ plans/*
 !plans/.gitkeep
 implements/*
 !implements/.gitkeep
+.agents/
 

@@ -123,6 +123,9 @@ Copilot Chat 會在每一輪對話自動載入 `.github/copilot-instructions.md`
 | `stm32g4-bare-metal-driver`     | Engineering  | STM32G4 (Cortex-M4F) 底層暫存器驅動開發與審核規範。                 |
 | `ti-c2000-f28p-driver`          | Engineering  | TI C2000 F28P 系列底層暫存器驅動開發規範。                          |
 | `grillme-engineering`           | Engineering  | 資深軟體架構師引導式提問，深挖工程技術盲點與邊界條件。               |
+| `c-unity-fff-tdd`               | Engineering  | C 語言 Unity + FFF (Fake Function Framework) 測試驅動開發規範。     |
+| `pptx`                          | Productivity | PowerPoint (.pptx / .potx) 簡報讀取、解析、生成與編輯。               |
+| `xlsx`                          | Productivity | Excel / CSV (.xlsx / .xlsm / .csv) 試算表計算、公式驗證與清理。      |
 
 ---
 
