@@ -26,3 +26,7 @@
 - **Excel 試算表處理 (XLSX)**：當使用者要求建立、分析、編輯、計算公式或清洗 Excel/CSV/TSV (.xlsx / .xlsm / .csv) 試算表時使用。請載入並遵循 [`skills/productivity/xlsx/SKILL.md`](skills/productivity/xlsx/SKILL.md)。
 - **C 語言 Unity + FFF 測試驅動開發 (C Unity FFF TDD)**：當使用者要在 C 語言或嵌入式韌體專案中進行 TDD (Test-Driven Development)、使用 Unity 與 FFF (Fake Function Framework) 撰寫單元測試或設計 Mock 邊界時使用。請載入並遵循 [`skills/engineering/c-unity-fff-tdd/SKILL.md`](skills/engineering/c-unity-fff-tdd/SKILL.md)。
 
+## 🔒 僅限手動/顯式調用技能 (Manual-Only Skills)
+以下技能**嚴禁由 Agent 自動匹配或自主觸發**。僅當使用者在對話中**明確指名調用**時，方可載入並遵循：
+- **Qwen35-CodingLimitation**：高防禦性程式碼缺陷診斷、邊界審查與最小手術式修復（零副作用、禁止自主重構、零外部依賴膨脹）。僅當使用者明確要求時，請載入並遵循 [`skills/engineering/qwen35-coding-limitation/SKILL.md`](skills/engineering/qwen35-coding-limitation/SKILL.md)。
+
