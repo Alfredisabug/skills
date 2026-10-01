@@ -28,5 +28,6 @@
 
 ## 🔒 僅限手動/顯式調用技能 (Manual-Only Skills)
 以下技能**嚴禁由 Agent 自動匹配或自主觸發**。僅當使用者在對話中**明確指名調用**時，方可載入並遵循：
-- **Qwen35-CodingLimitation**：高防禦性程式碼缺陷診斷、邊界審查與最小手術式修復（零副作用、禁止自主重構、零外部依賴膨脹）。僅當使用者明確要求時，請載入並遵循 [`skills/engineering/qwen35-coding-limitation/SKILL.md`](skills/engineering/qwen35-coding-limitation/SKILL.md)。
+- **qwen35-coding-limitation** (Qwen35-CodingLimitation)：高防禦性程式碼缺陷診斷、邊界審查與最小手術式修復（零副作用、禁止自主重構、零外部依賴膨脹）。僅當使用者明確要求時，請載入並遵循 [`skills/engineering/qwen35-coding-limitation/SKILL.md`](skills/engineering/qwen35-coding-limitation/SKILL.md)。
+
 

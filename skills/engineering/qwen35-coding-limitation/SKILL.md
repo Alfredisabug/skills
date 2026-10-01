@@ -1,5 +1,5 @@
 ---
-name: Qwen35-CodingLimitation
+name: qwen35-coding-limitation
 description: Senior defensive software engineer and code reviewer for surgical bug fixing, deep symbol investigation, and zero-side-effect changes. Manual invocation only.
 disable-model-invocation: true
 ---
