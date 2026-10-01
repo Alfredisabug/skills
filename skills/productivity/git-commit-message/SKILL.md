@@ -19,6 +19,7 @@ description: 當使用者要求撰寫、生成或審查 Git Commit Message 時�
   - **`style`**: Code formatting, punctuation, white-space (no logic change).
   - **`refactor`**: Code refactoring (no bug fix, no new feature).
   - **`chore`**: Maintenance, dependencies, build or tool configuration.
+- **版本號檢查 (Version Bump Check)**：檢查專案是否存在版本常數或清單檔案（如 `APP_VERSION`, `__version__`, `FW_VERSION`, `pyproject.toml`, `package.json`）。若變更包含 `feat` 或 `fix`，遵循 `semantic-release-version` 檢查是否需同步進版，並於 Commit Header 末端標註 `(vX.Y.Z)`。
 - **決策點 (Decisions)**：若變更過於龐大或包含多個無關修改，主動建議拆分 Commit，請使用者指示，不自行決定併入單一 Commit。
 
 ### 步驟三：生成 Commit Message (Execute)

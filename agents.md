@@ -25,6 +25,8 @@
 - **PowerPoint 簡報處理 (PPTX)**：當使用者要求建立、分析、編輯或讀取 PowerPoint (.pptx / .potx) 簡報時使用。請載入並遵循 [`skills/productivity/pptx/SKILL.md`](skills/productivity/pptx/SKILL.md)。
 - **Excel 試算表處理 (XLSX)**：當使用者要求建立、分析、編輯、計算公式或清洗 Excel/CSV/TSV (.xlsx / .xlsm / .csv) 試算表時使用。請載入並遵循 [`skills/productivity/xlsx/SKILL.md`](skills/productivity/xlsx/SKILL.md)。
 - **C 語言 Unity + FFF 測試驅動開發 (C Unity FFF TDD)**：當使用者要在 C 語言或嵌入式韌體專案中進行 TDD (Test-Driven Development)、使用 Unity 與 FFF (Fake Function Framework) 撰寫單元測試或設計 Mock 邊界時使用。請載入並遵循 [`skills/engineering/c-unity-fff-tdd/SKILL.md`](skills/engineering/c-unity-fff-tdd/SKILL.md)。
+- **語意化版本管理 (Semantic Release Version)**：當使用者準備提交程式碼、發佈版本、或變更涉及 feat/fix/breaking change 需晉升語意化版本號時使用。請載入並遵循 [`skills/productivity/semantic-release-version/SKILL.md`](skills/productivity/semantic-release-version/SKILL.md)。
+
 
 ## 🔒 僅限手動/顯式調用技能 (Manual-Only Skills)
 以下技能**嚴禁由 Agent 自動匹配或自主觸發**。僅當使用者在對話中**明確指名調用**時，方可載入並遵循：

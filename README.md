@@ -126,7 +126,9 @@ Copilot Chat 會在每一輪對話自動載入 `.github/copilot-instructions.md`
 | `c-unity-fff-tdd`               | Engineering  | C 語言 Unity + FFF (Fake Function Framework) 測試驅動開發規範。     |
 | `pptx`                          | Productivity | PowerPoint (.pptx / .potx) 簡報讀取、解析、生成與編輯。               |
 | `xlsx`                          | Productivity | Excel / CSV (.xlsx / .xlsm / .csv) 試算表計算、公式驗證與清理。      |
+| `semantic-release-version`      | Productivity | 跨語言語意化版本管理 (SemVer 2.0.0)，自動嗅探版號與同步晉級。      |
 | `qwen35-coding-limitation`      | Engineering  | 🔒 (手動專用) 高防禦性程式碼缺陷診斷與最小手術式修復，禁止自主重構。 |
+
 
 
 ---
