@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "alfred-agent-skills",
+  "version": "1.0.0",
+  "repository": "https://github.com/Alfredisabug/skills",
+  "updated_at": "2026-10-19",
+  "skills": {
+    "c-clean-architecture-firmware": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "針對 C 語言韌體開發 (MCU / RTOS) 的 Clean Architecture 實作指引，透過 VTABLE 函式指標實現依賴反轉，徹底分離硬體驅動 (HAL) 與核心業務邏輯。",
+      "path": "skills/engineering/c-clean-architecture-firmware"
+    },
+    "c-unity-fff-tdd": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "當使用者要在 C 語言或嵌入式韌體專案中進行 TDD (Test-Driven Development)、使用 Unity 與 FFF (Fake Function Framework) 撰寫單元測試或設計 Mock/Fake 邊界時使用。",
+      "path": "skills/engineering/c-unity-fff-tdd"
+    },
+    "grillme-engineering": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "扮演資深軟體工程師，透過循序漸進的提問協助釐清開發新功能、程式碼架構或 Debug 的技術盲點與邊界條件，確保完全對齊後才開始動工。",
+      "path": "skills/engineering/grillme"
+    },
+    "pyside6-gui-generator": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "當使用者要求設計、撰寫或重構 PyQt6 / PySide6 桌面應用程式 GUI 畫面與架構時使用。",
+      "path": "skills/engineering/pyside6-gui-generator"
+    },
+    "python-clean-architecture-gui": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "針對 Python 桌面應用程式（如 PySide6 / PyQt6）的 Clean Architecture 與 DDD (Domain-Driven Design) 實作指引，強調領域邏輯與 UI 框架的絕對解耦。",
+      "path": "skills/engineering/python-clean-architecture-gui"
+    },
+    "python-uv-environment": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "當需要在專案中使用 Python 時，自動使用 modern uv 管理虛擬環境與依賴套件。",
+      "path": "skills/engineering/python-uv-environment"
+    },
+    "qwen35-coding-limitation": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "高防禦性程式碼缺陷診斷與最小手術式修復，禁止自主重構，手動調度專用。",
+      "path": "skills/engineering/qwen35-coding-limitation"
+    },
+    "stm32g4-bare-metal-driver": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "當使用者要求設計、撰寫或審查 STM32G4 (Cortex-M4F) 的底層韌體與驅動時使用。",
+      "path": "skills/engineering/stm32g4-bare-metal-driver"
+    },
+    "ti-c2000-f28p-driver": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "當使用者要求設計、撰寫或審查 TI C2000 F28P 系列 (如 F28P550x、F28P650x) 的底層韌體與驅動時使用。",
+      "path": "skills/engineering/ti-c2000-f28p-driver"
+    },
+    "git-asset-manager": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "當使用者要求上傳、管理或附加檔案至 GitHub/GitLab (Release Assets、Issue/PR/MR 附件等) 時使用。優先使用 gh/glab CLI，備用 REST API。",
+      "path": "skills/productivity/git-asset-manager"
+    },
+    "git-branch-strategy": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "當使用者要求建立 Git 分支、合併分支或執行版本控制流程時使用。",
+      "path": "skills/productivity/git-branch-strategy"
+    },
+    "git-commit-message": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "依據暫存區差異自動生成 Conventional Commits 英文 Commit Message。",
+      "path": "skills/productivity/git-commit-message"
+    },
+    "github-api-manager": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "當使用者要求操作 GitHub (Issues、Pull Requests、Actions 等 REST / GraphQL / CLI)。",
+      "path": "skills/productivity/github-api-manager"
+    },
+    "gitlab-api-manager": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "當使用者要求操作 GitLab (Issues、Merge Requests、Pipelines 等 REST API / CLI)。",
+      "path": "skills/productivity/gitlab-api-manager"
+    },
+    "grillme-productivity": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "扮演產品經理與工作流顧問，透過提問協助釐清產品需求、工作流優化、或建立新 AI Skill 的邊界與目標，確保完全對齊後才開始規劃。",
+      "path": "skills/productivity/grillme"
+    },
+    "pptx": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "PowerPoint (.pptx / .potx) 簡報讀取、解析、生成、合併與編輯。",
+      "path": "skills/productivity/pptx"
+    },
+    "semantic-release-version": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "跨語言語意化版本管理 (SemVer 2.0.0)，自動嗅探版號與同步晉級。",
+      "path": "skills/productivity/semantic-release-version"
+    },
+    "setup-alfred-skills": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "目標專案首次執行時自動生成 AGENTS.md、Copilot 指引與工作流環境。",
+      "path": "skills/productivity/setup-alfred-skills"
+    },
+    "write-great-skill": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "當使用者要求建立、重構、簡化或優化 AI Skill、Prompt SOP 或 Agent 指導指令檔時使用。",
+      "path": "skills/productivity/write-great-skill"
+    },
+    "xlsx": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "Excel / CSV (.xlsx / .xlsm / .csv) 試算表計算、公式驗證、清洗與格式化。",
+      "path": "skills/productivity/xlsx"
+    }
+  }
+}
+

@@ -33,3 +33,10 @@
 - **qwen35-coding-limitation** (Qwen35-CodingLimitation)：高防禦性程式碼缺陷診斷、邊界審查與最小手術式修復（零副作用、禁止自主重構、零外部依賴膨脹）。僅當使用者明確要求時，請載入並遵循 [`skills/engineering/qwen35-coding-limitation/SKILL.md`](skills/engineering/qwen35-coding-limitation/SKILL.md)。
 
 
+## 📌 技能版本與清冊管理規範 (Skills Manifest & Versioning Protocol)
+- 本儲存庫根目錄維護單一權威技能清冊：[`manifest.json`](manifest.json)。
+- **強制規範**：當任何技能（`SKILL.md` 或其目錄下的相依資源/腳本）有新增、修改、重構或缺陷修復時，**必須同步更新 `manifest.json` 中對應技能的版號 (`version`)、更新日期 (`updated_at`) 與相關描述**。
+- 此清冊供下游生態與桌面工具（如 OmniBridge AI）進行遠端版本嗅探、安裝狀態比對與一鍵差異升級。
+
+
+
