@@ -24,6 +24,8 @@
 - **專案技能環境初始化 (Setup Alfred Skills)**：當使用者要求在專案中初始化 Alfred Skills 配置、設定 AGENTS.md 或配置 VS Code Copilot 規則時使用。請載入並遵循 [`skills/productivity/setup-alfred-skills/SKILL.md`](skills/productivity/setup-alfred-skills/SKILL.md)。
 - **PowerPoint 簡報處理 (PPTX)**：當使用者要求建立、分析、編輯或讀取 PowerPoint (.pptx / .potx) 簡報時使用。請載入並遵循 [`skills/productivity/pptx/SKILL.md`](skills/productivity/pptx/SKILL.md)。
 - **Excel 試算表處理 (XLSX)**：當使用者要求建立、分析、編輯、計算公式或清洗 Excel/CSV/TSV (.xlsx / .xlsm / .csv) 試算表時使用。請載入並遵循 [`skills/productivity/xlsx/SKILL.md`](skills/productivity/xlsx/SKILL.md)。
+- **Word 文件處理 (DOCX)**：當使用者要求建立、分析、編輯、排版或讀取 Word (.docx / .dotx) 文件時使用。請載入並遵循 [`skills/productivity/docx/SKILL.md`](skills/productivity/docx/SKILL.md)。
+- **PDF 文件處理 (PDF)**：當使用者要求讀取、分析、合併、分割、旋轉、填寫表單或產生 PDF (.pdf) 文件時使用。請載入並遵循 [`skills/productivity/pdf/SKILL.md`](skills/productivity/pdf/SKILL.md)。
 - **C 語言 Unity + FFF 測試驅動開發 (C Unity FFF TDD)**：當使用者要在 C 語言或嵌入式韌體專案中進行 TDD (Test-Driven Development)、使用 Unity 與 FFF (Fake Function Framework) 撰寫單元測試或設計 Mock 邊界時使用。請載入並遵循 [`skills/engineering/c-unity-fff-tdd/SKILL.md`](skills/engineering/c-unity-fff-tdd/SKILL.md)。
 - **語意化版本管理 (Semantic Release Version)**：當使用者準備提交程式碼、發佈版本、或變更涉及 feat/fix/breaking change 需晉升語意化版本號時使用。請載入並遵循 [`skills/productivity/semantic-release-version/SKILL.md`](skills/productivity/semantic-release-version/SKILL.md)。
 

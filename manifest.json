@@ -3,7 +3,7 @@
   "name": "alfred-agent-skills",
   "version": "1.0.0",
   "repository": "https://github.com/Alfredisabug/skills",
-  "updated_at": "2026-10-19",
+  "updated_at": "2026-10-28",
   "skills": {
     "c-clean-architecture-firmware": {
       "version": "1.0.0",
@@ -59,6 +59,12 @@
       "description": "當使用者要求設計、撰寫或審查 TI C2000 F28P 系列 (如 F28P550x、F28P650x) 的底層韌體與驅動時使用。",
       "path": "skills/engineering/ti-c2000-f28p-driver"
     },
+    "docx": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "Word (.docx / .dotx) 文件生成、解析、編輯、排版、表格與修訂處理。",
+      "path": "skills/productivity/docx"
+    },
     "git-asset-manager": {
       "version": "1.0.0",
       "category": "Productivity",
@@ -94,6 +100,12 @@
       "category": "Productivity",
       "description": "扮演產品經理與工作流顧問，透過提問協助釐清產品需求、工作流優化、或建立新 AI Skill 的邊界與目標，確保完全對齊後才開始規劃。",
       "path": "skills/productivity/grillme"
+    },
+    "pdf": {
+      "version": "1.0.0",
+      "category": "Productivity",
+      "description": "PDF (.pdf) 文件讀取、擷取、合併、分割、旋轉、表格填寫與浮水印處理。",
+      "path": "skills/productivity/pdf"
     },
     "pptx": {
       "version": "1.0.0",
