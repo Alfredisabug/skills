@@ -3,7 +3,7 @@
   "name": "alfred-agent-skills",
   "version": "1.0.0",
   "repository": "https://github.com/Alfredisabug/skills",
-  "updated_at": "2026-10-28",
+  "updated_at": "2026-11-02",
   "skills": {
     "c-clean-architecture-firmware": {
       "version": "1.0.0",
@@ -58,6 +58,12 @@
       "category": "Engineering",
       "description": "當使用者要求設計、撰寫或審查 TI C2000 F28P 系列 (如 F28P550x、F28P650x) 的底層韌體與驅動時使用。",
       "path": "skills/engineering/ti-c2000-f28p-driver"
+    },
+    "ui-taste": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "打造與潤飾 Web 及 iOS 介面，遵循 Uizze anti-ui-slop 規範，涵蓋佈局、階層、狀態與原生審查。",
+      "path": "skills/engineering/ui-taste"
     },
     "docx": {
       "version": "1.0.0",
@@ -139,4 +145,3 @@
     }
   }
 }
-

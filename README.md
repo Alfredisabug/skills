@@ -129,6 +129,7 @@ Copilot Chat 會在每一輪對話自動載入 `.github/copilot-instructions.md`
 | `docx`                          | Productivity | Word (.docx / .dotx) 文件生成、排版、表格樣式與修訂處理。           |
 | `pdf`                           | Productivity | PDF (.pdf) 文件讀取、擷取、合併、分割、旋轉與表單填寫。             |
 | `semantic-release-version`      | Productivity | 跨語言語意化版本管理 (SemVer 2.0.0)，自動嗅探版號與同步晉級。      |
+| `ui-taste`                      | Engineering  | Web 與 iOS 介面抗粗糙 (Anti-UI-Slop) 設計、排版與原生視覺審查規範。 |
 | `qwen35-coding-limitation`      | Engineering  | 🔒 (手動專用) 高防禦性程式碼缺陷診斷與最小手術式修復，禁止自主重構。 |
 
 
