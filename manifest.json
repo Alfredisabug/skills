@@ -3,7 +3,7 @@
   "name": "alfred-agent-skills",
   "version": "1.0.0",
   "repository": "https://github.com/Alfredisabug/skills",
-  "updated_at": "2026-11-02",
+  "updated_at": "2026-11-04",
   "skills": {
     "c-clean-architecture-firmware": {
       "version": "1.0.0",
@@ -72,7 +72,7 @@
       "path": "skills/productivity/docx"
     },
     "git-asset-manager": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "Productivity",
       "description": "當使用者要求上傳、管理或附加檔案至 GitHub/GitLab (Release Assets、Issue/PR/MR 附件等) 時使用。優先使用 gh/glab CLI，備用 REST API。",
       "path": "skills/productivity/git-asset-manager"
@@ -96,7 +96,7 @@
       "path": "skills/productivity/github-api-manager"
     },
     "gitlab-api-manager": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "Productivity",
       "description": "當使用者要求操作 GitLab (Issues、Merge Requests、Pipelines 等 REST API / CLI)。",
       "path": "skills/productivity/gitlab-api-manager"
