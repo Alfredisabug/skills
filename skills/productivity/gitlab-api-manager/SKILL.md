@@ -1,6 +1,6 @@
 ---
 name: gitlab-api-manager
-description: Manage GitLab resources (Issues, MRs, Pipelines, Releases, Generic Packages, Projects). Prioritize official glab CLI, fallback to REST API v4.
+description: Use when the user asks to manage GitLab resources (Issues, MRs, Pipelines, Releases, Projects). Prioritizes official glab CLI, fallbacks to REST API v4.
 ---
 
 # GitLab API Manager SOP
@@ -19,6 +19,7 @@ Execute operations against GitLab resources across GitLab.com and self-hosted in
    ```bash
    glab auth status
    ```
+   *For self-hosted instances with multiple remotes, use `--hostname <host>` or set `GITLAB_HOST=<host>`.*
 2. **Retrieve Context (Facts)**:
    ```bash
    glab repo view
@@ -39,35 +40,22 @@ Execute operations against GitLab resources across GitLab.com and self-hosted in
 
 #### 2. Merge Requests (MR)
 * **List**: `glab mr list --state <opened|closed|merged|all>`
-* **Diff/View**: `glab mr diff <mr_id>` / `glab mr view <mr_id>`
+* **Diff / View**: `glab mr diff <mr_id>` / `glab mr view <mr_id>`
+* **Checkout Locally**: `glab mr checkout <mr_id>`
 * **Create**: `glab mr create --title "<title>" --description "<description>" --target-branch <target> --source-branch <source>`
-* **Approve / Merge**: `glab mr approve <mr_id>` / `glab mr merge <mr_id> --auto-merge`
+* **Add Note / Review**: `glab mr note <mr_id> --message "<message>"`
+* **Approve / Merge**: `glab mr approve <mr_id>` / `glab mr merge <mr_id> --auto-merge [--squash]`
 
 #### 3. CI/CD Pipelines
 * **Status / List**: `glab ci status` / `glab ci list --per-page 10`
 * **View Job Trace**: `glab ci trace <job_id>`
-* **Retry**: `glab ci retry <pipeline_or_job_id>`
+* **Retry / Cancel**: `glab ci retry <pipeline_or_job_id>` / `glab ci cancel <pipeline_or_job_id>`
 
-#### 4. Releases & Assets
+#### 4. Releases
 * **List / View**: `glab release list` / `glab release view <tag_name>`
-* **Create Release**: `glab release create <tag_name> [<files>...] --name "<name>" --notes "<notes>"`
-* **Upload Assets**:
-  * Standard: `glab release upload <tag_name> <file>`
-  * **Reliable 2-Step Protocol (for binary assets, self-hosted instances, or tags containing slashes)**:
-    1. Upload binary to Generic Package Registry (sanitize `<version>` to remove `/`):
-       ```bash
-       glab api "projects/:id/packages/generic/<package_name>/<sanitized_version>/<file_name>" \
-         --method PUT --input "<local_file_path>"
-       ```
-    2. Link package asset to release (`direct_asset_path` MUST start with `/`):
-       ```bash
-       glab api "projects/:id/releases/<encoded_tag>/assets/links" --method POST \
-         -f name="<file_name>" \
-         -f url="https://<gitlab_host>/api/v4/projects/:id/packages/generic/<package_name>/<sanitized_version>/<file_name>" \
-         -f direct_asset_path="/<file_name>" \
-         -f link_type="package"
-       ```
-    *Refer to [`git-asset-manager`](../git-asset-manager/SKILL.md) for full asset specifications.*
+* **Create Release**: `glab release create <tag_name> --name "<name>" --notes "<notes>"`
+* **Delete Release**: `glab release delete <tag_name> -y`
+* **Upload Assets & Binaries**: For uploading binary firmware, installer packages, or handling self-hosted upload constraints, load and follow [`git-asset-manager`](../git-asset-manager/SKILL.md).
 
 #### 5. REST API v4 Fallback
 * Endpoint root: `/api/v4/` (or `glab api "projects/:id/..."`).
@@ -89,9 +77,8 @@ GitLab CLI (`glab`) differs significantly from GitHub CLI (`gh`). NEVER mix synt
 * ❌ NO `--body` in `glab issue/mr create` → use `--description` or `-d`.
 * ❌ NO `--base` / `--head` in MR creation → use `--target-branch` / `--source-branch`.
 * ❌ NO `glab issue comment` → use `glab issue note --message "<msg>"`.
+* ❌ NO `glab mr comment` → use `glab mr note --message "<msg>"`.
 * ❌ NO `--clobber` in `glab` (flag does not exist).
 * ❌ NO `--limit` → use `--per-page` or `-p`.
 * ❌ NO `--state open` → use `--state opened`.
 * ❌ NO `glab pr` or `glab run` → use `glab mr` and `glab ci`.
-* ❌ NO slashes in generic package version strings (`\A[a-zA-Z0-9\-_.]+\z`).
-* ❌ Release asset `direct_asset_path` MUST have a leading slash `/`.
