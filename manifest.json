@@ -3,7 +3,7 @@
   "name": "alfred-agent-skills",
   "version": "1.0.0",
   "repository": "https://github.com/Alfredisabug/skills",
-  "updated_at": "2026-11-04",
+  "updated_at": "2026-11-10",
   "skills": {
     "c-clean-architecture-firmware": {
       "version": "1.0.0",
@@ -17,11 +17,23 @@
       "description": "當使用者要在 C 語言或嵌入式韌體專案中進行 TDD (Test-Driven Development)、使用 Unity 與 FFF (Fake Function Framework) 撰寫單元測試或設計 Mock/Fake 邊界時使用。",
       "path": "skills/engineering/c-unity-fff-tdd"
     },
+    "frontend-design": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "當使用者要求設計新 UI 或重塑既有介面時，提供具識別度與設計質感的視覺風格、字體排版、配色與排版架構指導，避免範本化與 AI 預設外觀。",
+      "path": "skills/engineering/frontend-design"
+    },
     "grillme-engineering": {
       "version": "1.0.0",
       "category": "Engineering",
       "description": "扮演資深軟體工程師，透過循序漸進的提問協助釐清開發新功能、程式碼架構或 Debug 的技術盲點與邊界條件，確保完全對齊後才開始動工。",
       "path": "skills/engineering/grillme"
+    },
+    "improve-codebase-architecture": {
+      "version": "1.0.0",
+      "category": "Engineering",
+      "description": "掃描代碼庫中的架構摩擦與淺模組，提議深模組重構契機，產生視覺化 HTML 報告並深入對齊架構決策。",
+      "path": "skills/engineering/improve-codebase-architecture"
     },
     "pyside6-gui-generator": {
       "version": "1.0.0",

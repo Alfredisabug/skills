@@ -130,6 +130,8 @@ Copilot Chat 會在每一輪對話自動載入 `.github/copilot-instructions.md`
 | `pdf`                           | Productivity | PDF (.pdf) 文件讀取、擷取、合併、分割、旋轉與表單填寫。             |
 | `semantic-release-version`      | Productivity | 跨語言語意化版本管理 (SemVer 2.0.0)，自動嗅探版號與同步晉級。      |
 | `ui-taste`                      | Engineering  | Web 與 iOS 介面抗粗糙 (Anti-UI-Slop) 設計、排版與原生視覺審查規範。 |
+| `frontend-design`               | Engineering  | 獨特與具識別度的前端 UI 視覺風格、調色盤、排版與反範本化設計指導。 |
+| `improve-codebase-architecture` | Engineering  | 🔒 (手動專用) 掃描代碼庫架構摩擦與淺模組，提議深模組重構與 HTML 報告。 |
 | `qwen35-coding-limitation`      | Engineering  | 🔒 (手動專用) 高防禦性程式碼缺陷診斷與最小手術式修復，禁止自主重構。 |
 
 

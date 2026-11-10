@@ -29,11 +29,13 @@
 - **C 語言 Unity + FFF 測試驅動開發 (C Unity FFF TDD)**：當使用者要在 C 語言或嵌入式韌體專案中進行 TDD (Test-Driven Development)、使用 Unity 與 FFF (Fake Function Framework) 撰寫單元測試或設計 Mock 邊界時使用。請載入並遵循 [`skills/engineering/c-unity-fff-tdd/SKILL.md`](skills/engineering/c-unity-fff-tdd/SKILL.md)。
 - **語意化版本管理 (Semantic Release Version)**：當使用者準備提交程式碼、發佈版本、或變更涉及 feat/fix/breaking change 需晉升語意化版本號時使用。請載入並遵循 [`skills/productivity/semantic-release-version/SKILL.md`](skills/productivity/semantic-release-version/SKILL.md)。
 - **前端 UI 品味與反粗糙設計 (UI Taste)**：當使用者要求設計、實作、重構、審查或潤飾 Web 或 iOS 使用者介面 (UI/UX) 且需遵循高質感 anti-ui-slop 規範時使用。請載入並遵循 [`skills/engineering/ui-taste/SKILL.md`](skills/engineering/ui-taste/SKILL.md)。
+- **前端視覺風格與介面設計 (Frontend Design)**：當使用者要求設計新 UI 或重塑既有介面、追求具識別度的視覺風格、自訂調色盤、字體排版、設計系統並避免範本化/AI 預設外觀時使用。請載入並遵循 [`skills/engineering/frontend-design/SKILL.md`](skills/engineering/frontend-design/SKILL.md)。
 
 
 ## 🔒 僅限手動/顯式調用技能 (Manual-Only Skills)
 以下技能**嚴禁由 Agent 自動匹配或自主觸發**。僅當使用者在對話中**明確指名調用**時，方可載入並遵循：
 - **qwen35-coding-limitation** (Qwen35-CodingLimitation)：高防禦性程式碼缺陷診斷、邊界審查與最小手術式修復（零副作用、禁止自主重構、零外部依賴膨脹）。僅當使用者明確要求時，請載入並遵循 [`skills/engineering/qwen35-coding-limitation/SKILL.md`](skills/engineering/qwen35-coding-limitation/SKILL.md)。
+- **improve-codebase-architecture** (Improve Codebase Architecture)：掃描代碼庫中的架構摩擦與淺模組（Shallow Modules），提議深模組（Deep Modules）重構契機，產生視覺化 HTML 報告並深入對齊架構決策。僅當使用者明確要求時，請載入並遵循 [`skills/engineering/improve-codebase-architecture/SKILL.md`](skills/engineering/improve-codebase-architecture/SKILL.md)。
 
 
 ## 📌 技能版本與清冊管理規範 (Skills Manifest & Versioning Protocol)
