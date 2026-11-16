@@ -3,12 +3,12 @@
   "name": "alfred-agent-skills",
   "version": "1.0.0",
   "repository": "https://github.com/Alfredisabug/skills",
-  "updated_at": "2026-11-10",
+  "updated_at": "2026-11-16",
   "skills": {
     "c-clean-architecture-firmware": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "Engineering",
-      "description": "針對 C 語言韌體開發 (MCU / RTOS) 的 Clean Architecture 實作指引，透過 VTABLE 函式指標實現依賴反轉，徹底分離硬體驅動 (HAL) 與核心業務邏輯。",
+      "description": "Clean Architecture and Clean Code (Robert C. Martin) guide for C firmware (MCU/RTOS). Decouples HAL/RTOS from domain logic via const VTABLEs while minimizing RAM, heap usage, and call/branch overhead.",
       "path": "skills/engineering/c-clean-architecture-firmware"
     },
     "c-unity-fff-tdd": {

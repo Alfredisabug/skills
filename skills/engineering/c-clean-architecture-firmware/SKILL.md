@@ -1,119 +1,178 @@
 ---
 name: c-clean-architecture-firmware
-description: 針對 C 語言韌體開發 (MCU / RTOS) 的 Clean Architecture 實作指引，透過 VTABLE (函式指標) 實現依賴反轉，徹底分離硬體驅動 (HAL) 與核心業務邏輯。
+description: Clean Architecture and Clean Code (Robert C. Martin) guide for C firmware (MCU/RTOS). Decouples HAL/RTOS from domain logic via const VTABLEs while minimizing RAM, heap usage, and call/branch overhead.
 ---
 
-# 核心架構原則 (Core Architecture Principles)
+# Core Architecture & Clean Code Principles
 
-當開發 MCU 韌體 (不管是 Bare-metal 或 RTOS) 時，必須嚴格遵守以下架構規範。目的是確保核心商業邏輯（Domain Layer）可以在不需要實際硬體的情況下，直接在 PC 端編譯並執行單元測試。
+Write MCU firmware (bare-metal or RTOS) so the Domain Layer compiles and unit-tests on a host PC while keeping **zero heap usage, minimal RAM, and lean execution paths**.
 
-## 1. 嚴格的硬體隔離 (Pure Domain Layer)
-- Domain 層（核心邏輯、狀態機、演算法）**絕對禁止**包含特定硬體廠商的標頭檔 (例如 `#include "stm32g4xx_hal.h"`)。
-- Domain 層只能依賴 C 標準函式庫 (如 `<stdint.h>`, `<stdbool.h>`, `<stddef.h>`)。
-- 絕不在 Domain 邏輯中直接呼叫 `HAL_GPIO_WritePin`、`HAL_Delay` 或直接操作硬體暫存器。
+## 1. Pure Domain Layer (Hardware & RTOS Isolation)
+- Domain code (logic, state machines, algorithms) **MUST NOT** include vendor HAL (`stm32g4xx_hal.h`) or RTOS (`FreeRTOS.h`) headers.
+- Depend only on standard C headers (`<stdint.h>`, `<stdbool.h>`, `<stddef.h>`).
+- **Zero Dynamic Allocation**: Never call `malloc`/`free` in Domain code; the caller/Composition Root statically allocates all structs.
 
-## 2. 利用 VTABLE 實作依賴反轉 (Dependency Inversion via Function Pointers)
-- 由於 C 語言沒有物件導向的 Interface 語法，所有的外部依賴必須在 Domain 層定義成包含「函式指標 (Function Pointers)」的 `struct`（即 VTABLE）。
-- 外部的 Infrastructure / HAL 層必須實作這些函式，並在初始化時（通常在 `main.c` 中）將實體化的 VTABLE 注入 (Inject) 給 Domain 層。
+## 2. Dependency Inversion via `const` VTABLE
+- Define external dependencies in Domain headers as `struct`s of function pointers (VTABLE).
+- **Save RAM**: Store a pointer to a `static const` VTABLE (`const IMotorGpio*`) in the domain struct so the table lives in Flash/RODATA, not copied per instance.
+- **Interface Segregation (ISP)**: Split unrelated responsibilities (e.g., `IMotorGpio` for I/O vs. `ITimeSource` for ticks).
+- **Multi-Instance Context (`void* ctx`)**: Omit `ctx` for singletons (fewer args, less overhead). When multiple instances share one driver, pass `void* ctx` as the **last parameter** of each VTABLE function.
 
-## 3. 作業系統抽象層 (OS Abstraction Layer, OSAL)
-- 若專案使用 RTOS（如 FreeRTOS），Domain 層**絕對禁止**直接 `#include "FreeRTOS.h"` 或呼叫特定的 OS API（如 `xQueueSend` 或 `vTaskDelay`）。
-- 所有的 OS 資源調度（Delay, Mutex, Queue, EventGroup），也必須透過 VTABLE 或另外封裝好的 OSAL 介面提供給 Domain 使用。
+## 3. Firmware Clean Code Discipline
+- **Encapsulation (Static-Friendly)**: Prefix internal struct fields with `priv_` (never mutate directly from outside); expose state via explicit getter/command APIs (`Module_IsRunning()`, `Module_Start()`).
+- **Boundary-Only Validation**: Check `NULL` pointers and VTABLE entries at `Init` / public API boundaries (returning an `enum` status code). Keep internal/hot-path helpers lean without redundant defensive checks.
+- **Small Functions & Shallow Nesting**: Use early returns, keep functions single-purpose (ideally ≤ 2–3 args), and replace magic numbers with `enum` or named constants.
+- **Non-Blocking Logic**: Prefer tick-based state machines (`get_tick_ms()`) over blocking `delay_ms()`.
 
 ---
 
-# 程式碼範例 (Code Examples)
+# Verification
+Before finishing, verify the Domain Layer compiles cleanly on host without HAL/RTOS headers:
+```sh
+gcc -std=c11 -Wall -Wextra -Werror -c motor_controller.c -o /dev/null
+```
 
-## ❌ 不正確的寫法 (Incorrect)
-Domain 層與硬體驅動（HAL）及 RTOS 緊密耦合，無法在不接硬體的情況下進行單元測試。
+---
+
+# Code Examples
+
+## ❌ Incorrect
+Tightly coupled to HAL/RTOS, blocking delay, magic numbers, no encapsulation.
 
 ```c
-// motor_controller.c (核心邏輯)
-#include "stm32g4xx_hal.h"  // ❌ 嚴重違反：引入硬體相關標頭檔
-#include "FreeRTOS.h"       // ❌ 嚴重違反：引入特定 OS 標頭檔
+#include "stm32g4xx_hal.h"  // ❌ HAL dependency
+#include "FreeRTOS.h"       // ❌ RTOS dependency
 #include "task.h"
 
 void Motor_RunLogic(void) {
-    // ❌ 直接呼叫 HAL API 與 OS API
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); 
-    vTaskDelay(pdMS_TO_TICKS(100)); 
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+    vTaskDelay(pdMS_TO_TICKS(100)); // ❌ Blocking + magic number
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 }
 ```
 
-## ✅ 正確的寫法 (Correct)
-Domain 層定義介面 (VTABLE)，由外部在啟動時進行依賴注入 (Dependency Injection)。
+## ✅ Correct
+Pure C Domain Layer, ISP-split `const` VTABLEs in Flash, `priv_` fields with getter/command APIs, boundary validation, non-blocking tick logic, `void* ctx` as last arg for multi-instance support.
 
 ```c
-// --- 1. Domain Layer: motor_controller.h (純 C，無硬體相依) ---
-#include <stdint.h>
+// --- 1. Domain Layer: motor_controller.h (Pure C) ---
 #include <stdbool.h>
+#include <stdint.h>
 
-// 定義依賴介面 (VTABLE)
-typedef struct {
-    void (*set_pin)(bool state);
-    void (*delay_ms)(uint32_t ms);
-} IMotorHardware;
+typedef enum {
+    MOTOR_OK = 0,
+    MOTOR_ERR_INVALID_ARG
+} MotorStatus_t;
 
-// 定義 Domain 的狀態結構
+// ISP: separate hardware I/O from time source
 typedef struct {
-    IMotorHardware hw; // 保存硬體介面
-    bool is_running;
+    void (*set_pin)(bool active, void* ctx);
+} IMotorGpio;
+
+typedef struct {
+    uint32_t (*get_tick_ms)(void);
+} ITimeSource;
+
+typedef struct {
+    const IMotorGpio*  priv_gpio;     // Points to Flash/RODATA
+    const ITimeSource* priv_time;
+    void*              priv_gpio_ctx; // Optional; omit for singletons
+    uint32_t           priv_pulse_ms;
+    uint32_t           priv_start_tick;
+    bool               priv_is_running;
 } MotorController_t;
 
-// 建構子 (依賴注入)
-void MotorController_Init(MotorController_t* self, IMotorHardware hw_interface);
-void MotorController_RunLogic(MotorController_t* self);
+MotorStatus_t MotorController_Init(MotorController_t* self,
+                                   const IMotorGpio* gpio,
+                                   const ITimeSource* time,
+                                   uint32_t pulse_ms,
+                                   void* gpio_ctx);
+void MotorController_Start(MotorController_t* self);
+void MotorController_Update(MotorController_t* self);
+bool MotorController_IsRunning(const MotorController_t* self);
 
 
 // --- 2. Domain Layer: motor_controller.c ---
 #include "motor_controller.h"
+#include <stddef.h>
 
-void MotorController_Init(MotorController_t* self, IMotorHardware hw_interface) {
-    self->hw = hw_interface; // 儲存 VTABLE
-    self->is_running = false;
+MotorStatus_t MotorController_Init(MotorController_t* self,
+                                   const IMotorGpio* gpio,
+                                   const ITimeSource* time,
+                                   uint32_t pulse_ms,
+                                   void* gpio_ctx) {
+    // Boundary validation only
+    if (!self || !gpio || !gpio->set_pin || !time || !time->get_tick_ms || pulse_ms == 0U) {
+        return MOTOR_ERR_INVALID_ARG;
+    }
+    self->priv_gpio       = gpio;
+    self->priv_time       = time;
+    self->priv_gpio_ctx   = gpio_ctx;
+    self->priv_pulse_ms   = pulse_ms;
+    self->priv_start_tick = 0U;
+    self->priv_is_running = false;
+    return MOTOR_OK;
 }
 
-void MotorController_RunLogic(MotorController_t* self) {
-    // ✅ 透過函式指標呼叫硬體與系統資源，完全解耦
-    self->hw.set_pin(true);
-    self->hw.delay_ms(100);
-    self->hw.set_pin(false);
+void MotorController_Start(MotorController_t* self) {
+    if (self->priv_is_running) {
+        return; // Early return
+    }
+    self->priv_is_running = true;
+    self->priv_start_tick = self->priv_time->get_tick_ms();
+    self->priv_gpio->set_pin(true, self->priv_gpio_ctx);
+}
+
+void MotorController_Update(MotorController_t* self) {
+    if (!self->priv_is_running) {
+        return;
+    }
+    uint32_t elapsed = self->priv_time->get_tick_ms() - self->priv_start_tick;
+    if (elapsed >= self->priv_pulse_ms) {
+        self->priv_gpio->set_pin(false, self->priv_gpio_ctx);
+        self->priv_is_running = false;
+    }
+}
+
+bool MotorController_IsRunning(const MotorController_t* self) {
+    return self->priv_is_running;
 }
 
 
-// --- 3. Infrastructure / HAL Layer (硬體實作) ---
+// --- 3. Infrastructure / HAL Layer ---
 #include "stm32g4xx_hal.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "motor_controller.h"
 
-// 實作 VTABLE 需要的函式
-static void hw_set_pin(bool state) {
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+typedef struct {
+    GPIO_TypeDef* port;
+    uint16_t      pin;
+} Stm32GpioCtx_t;
+
+static void hal_set_pin(bool active, void* ctx) {
+    const Stm32GpioCtx_t* gpio = (const Stm32GpioCtx_t*)ctx;
+    HAL_GPIO_WritePin(gpio->port, gpio->pin, active ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
-static void hw_delay_ms(uint32_t ms) {
-    vTaskDelay(pdMS_TO_TICKS(ms));
+static uint32_t osal_get_tick_ms(void) {
+    return (uint32_t)(xTaskGetTickCount() * portTICK_PERIOD_MS);
 }
 
 
 // --- 4. Composition Root (main.c) ---
+enum { MOTOR_PULSE_DURATION_MS = 100U };
+
+static const IMotorGpio  kMotorGpioVtable = { .set_pin = hal_set_pin };
+static const ITimeSource kTimeVtable      = { .get_tick_ms = osal_get_tick_ms };
+static Stm32GpioCtx_t    motor_a_ctx      = { .port = GPIOA, .pin = GPIO_PIN_5 };
+static MotorController_t motor_a;
+
 int main(void) {
     HAL_Init();
-    // ... 設定時鐘等基礎設施 ...
-
-    // 建立實體的 VTABLE
-    IMotorHardware stm32_hw = {
-        .set_pin = hw_set_pin,
-        .delay_ms = hw_delay_ms
-    };
-
-    // ✅ 將硬體實作注入到 Domain 層
-    MotorController_t my_motor;
-    MotorController_Init(&my_motor, stm32_hw);
-
-    // 啟動 RTOS Task，並在 Task 中呼叫 MotorController_RunLogic(&my_motor);
-    // ...
+    MotorController_Init(&motor_a, &kMotorGpioVtable, &kTimeVtable,
+                         MOTOR_PULSE_DURATION_MS, &motor_a_ctx);
+    MotorController_Start(&motor_a);
+    // RTOS task periodically calls MotorController_Update(&motor_a);
 }
 ```
